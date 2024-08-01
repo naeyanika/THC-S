@@ -81,7 +81,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df1_selected['Nilai_Modus'] = df1_selected.groupby('ID')['Modus_Sihara'].transform('first')
     
     df1_selected_1['Sisa'] = df1_selected_1['Db Sihara'] - df1_selected_1['Cr Sihara']
-    
+    print(df1_selected_1.columns)
     df1_selected_1.rename(columns=lambda x: x.strip(), inplace=True)
     df1_selected_1.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
     
