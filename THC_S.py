@@ -150,6 +150,10 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     desired_order[
         'ID','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Sisa','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
     ]
+    for col in desired_order:
+        if col not in merged_df2.columns:
+            merged_df2[col] = 0
+            
     final_sihara = merged_df2[desired_order]
 
     st.write("THC Sihara:")
