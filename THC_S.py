@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import io
 
 st.title('Aplikasi Pengolahan THC Simpanan')
 st.markdown("""
