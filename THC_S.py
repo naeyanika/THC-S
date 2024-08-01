@@ -27,9 +27,9 @@ if uploaded_files:
 
 # Nama Dataframe
 if 'pinjaman_na.xlsx' in dfs:
-df_db = dfs['DbSimpanan.xlsx']
+    df_db = dfs['DbSimpanan.xlsx']
 if 'THC.xlsx' in dfs:
-df_thc = dfs['THC.xlsx]
+    df_thc = dfs['THC.xlsx]
 
 # Db Simpanan
 df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
