@@ -148,7 +148,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df2['Saldo Akhir'] = merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
     merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
 
-    desired_order[
+    desired_order = [
         'ID Anggota','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Sisa','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
     ]
     for col in desired_order:
