@@ -55,10 +55,10 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write("Db Sukarela:")
     st.write(df_sukarela)
     
-    # Filter hariraya
-    df_pensiun = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
+    # Filter pensiun
+    df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
     st.write("Db Pensiun:")
-    st.write(df_pensiun)
+    st.write(df_pensiun_2)
 
     # Pivot table simpanan
     df = df.rename(columns=lambda x: x.strip())
@@ -166,7 +166,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df1_pensiun = df_pensiun[selected_columns]
     df1_pensiun['Sisa'] = df1_pensiun['Db Pensiun'] - df1_pensiun['Cr Pensiun']
 
-    merged_df5 = df1_pensiun.merge(df_pensiun[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
+    merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     merged_df5.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df5.drop(columns=['Client ID'], inplace=True)
 
