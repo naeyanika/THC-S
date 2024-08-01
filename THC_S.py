@@ -138,10 +138,13 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     'Transaksi Nol', 'Transaksi Tidak Sesuai'
 ]
     df_final_5 = df_final_5.reindex(columns=ordered_columns)
+
     merged_df = df_final_5.merge(df_sihara[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
+    merged_df.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
+    merged_df.drop(columns=['Client ID'], inplace=True)
 
     st.write("THC Sihara:")
-    st.write(df_final_5)
+    st.write(merged_df)
 
     # Pensiun
     df_pensiun = pd.read_excel('THC S.xlsx')
@@ -194,7 +197,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     # Download links for all
     for name, df in {
-        'Sihara.xlsx': df_final_5,
+        'Sihara.xlsx': merged_df,
         'Sukarela.xlsx': df_final,
         'Pensiun.xlsx': df1_pensiun
     }.items():
