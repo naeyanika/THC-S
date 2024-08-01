@@ -69,10 +69,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     desired_order = [
             'ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara','Cr Sihara','Db Pensiun','Cr Pensiun','Db Sukarela','Cr Sukarela',
             ]
-    # Tambahkan kolom yang mungkin belum ada dalam DataFrame
-    for col in desired_order:
-        if col not in pivot_table_simpanan.columns:
-            pivot_table_simpanan[col] = 0
 
     pivot_table_simpanan = pivot_table_simpanan[desired_order]
     
