@@ -51,9 +51,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write(df_sihara)
     
     # Filter sukarela
-    df_sukarela = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
+    df_sukarela_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
     st.write("Db Sukarela:")
-    st.write(df_sukarela)
+    st.write(df_sukarela_2)
     
     # Filter pensiun
     df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
@@ -219,14 +219,33 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].fillna(0)
     df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].astype(int)
     
+    merged_df_sukarela = df_final.merge(df_sukarela_2[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
+    merged_df_sukarela.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
+    merged_df_sukarela.drop(columns=['Client ID'], inplace=True)
+
+    # menambahkan selisih saldo di sihara
+    merged_df_final = merged_df_sukarela.merge(df1[['ID', 'Db Sukarela', 'Cr Sukarela']], left_on='ID Anggota', right_on='ID', how='left')
+    merged_df_final['Saldo Akhir'] = merged_df_sukarela['Db Sukarela'] - merged_df_sukarela['Cr Sukarela']
+    merged_df_final.drop(columns=['ID', 'Db Sukarela', 'Cr Sukarela'], inplace=True)
+
+    desired_order = [
+        'ID Anggota','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Sisa','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
+    ]
+    for col in desired_order:
+        if col not in merged_df_final.columns:
+            merged_df_final[col] = 0
+
+    final_sukarela = merged_df_final[desired_order]
+
+
     st.write("THC Sukarela:")
-    st.write(df_final)
+    st.write(final_sukarela)
 
     # Download links for all
     for name, df in {
         'Sihara.xlsx': final_sihara,
-        'Sukarela.xlsx': df_final,
-        'Pensiun.xlsx': df1_pensiun
+        'Sukarela.xlsx': final_sukarela,
+        'Pensiun.xlsx': final_pensiun
     }.items():
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
