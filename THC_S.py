@@ -60,7 +60,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write(df_pensiun)
 
     # Pivot table simpanan
-    df_thc = df_thc.rename(columns=lambda x: x.strip())
+    df = df.rename(columns=lambda x: x.strip())
     pivot_table_simpanan = pd.pivot_table(df_thc,
                                 index=['ID', 'NAMA', 'CENTER', 'KEL'],
                                 values=['Db Sihara', 'Cr Sihara', 'Db Pensiun', 'Cr Pensiun', 'Db Sukarela', 'Cr Sukarela', 'Db Wajib', 'Cr Wajib', 'Db Total', 'Cr Total'],
