@@ -81,7 +81,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df1 = pd.read_excel('THC S.xlsx')
 
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
-    df1_selected_1 = df1[selected_columns]
+    df1_selected_1 = df_thc[selected_columns]
     df1_selected_1['Modus_Sihara'] = df1_selected_1.groupby(['ID', 'NAMA'])['Db Sihara'].transform(lambda x: x.mode()[0])
     df1_selected = df1_selected_1.loc[:, ['ID', 'NAMA', 'Modus_Sihara']]
     df1_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
