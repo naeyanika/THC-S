@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-import io
 
 st.title('Aplikasi Pengolahan THC Simpanan')
 st.markdown("""
@@ -47,17 +46,17 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     # Filter sihara
     df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
-    st.write("Sihara:")
+    st.write("Db Sihara:")
     st.write(df_sihara)
     
     # Filter sukarela
     df_sukarela = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
-    st.write("Sukarela:")
+    st.write("Db Sukarela:")
     st.write(df_sukarela)
     
     # Filter hariraya
     df_pensiun = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
-    st.write("Pensiun:")
+    st.write("Db Pensiun:")
     st.write(df_pensiun)
 
     # Pivot table simpanan
@@ -122,7 +121,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_final_5['Sisa'] = df_final_5['Sisa'].astype(int)
 
 
-
     df_final_5= df_final_5.rename(columns={
     'ID':'ID Anggota',
     'NAMA':'Nama',
@@ -139,16 +137,18 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     'Transaksi Nol', 'Transaksi Tidak Sesuai'
 ]
     df_final_5 = df_final_5.reindex(columns=ordered_columns)
-    st.write("Sihara:")
-    st.write(df_final_5)
+    merged_df = df_final_5.merge(df_sihara[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
     
+    st.write("THC Sihara:")
+    st.write(df_final_5)
+
     # Pensiun
     df_pensiun = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
     df1_pensiun = df_pensiun[selected_columns]
     df1_pensiun['Sisa'] = df1_pensiun['Db Pensiun'] - df1_pensiun['Cr Pensiun']
 
-    st.write("Pensiun:")
+    st.write("THC Pensiun:")
     st.write(df1_pensiun)   
 
     # Sukarela
@@ -188,7 +188,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].fillna(0)
     df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].astype(int)
     
-    st.write("Sukarela:")
+    st.write("THC Sukarela:")
     st.write(df_final)
 
     # Download links for all
