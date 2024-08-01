@@ -238,8 +238,8 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     # Download links for all
     for name, df in {
         'Sihara.xlsx': final_sihara,
-        'Sukarela.xlsx': final_sukarela,
-        'Pensiun.xlsx': final_pensiun
+        'Pensiun.xlsx': final_pensiun,
+        'Sukarela.xlsx': final_sukarela
     }.items():
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
