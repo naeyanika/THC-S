@@ -106,7 +106,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_temp = pd.merge(df1_selected_1, df1_selected, on=['ID', 'NAMA'], how='left')
     df2 = pd.merge(df_temp, df_baru_3, on=['ID', 'NAMA'], how='left')
 
-    df_sample = df_thc[(df_thc['Db Sihara'] == df_thc['Modus_Sihara'])].groupby('ID').size().reset_index()
+    df_sample = df_thc[(df_thc['Db Sihara'] == df2['Modus_Sihara'])].groupby('ID').size().reset_index()
     df_sample.rename(columns={0: 'Transaksi Sesuai'}, inplace=True)
     df_final = pd.merge(df2, df_sample, on='ID', how='left')
 
