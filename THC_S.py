@@ -94,15 +94,15 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df1_selected_1['Sisa'] = df1_selected_1['Db Sihara'] - df1_selected_1['Cr Sihara']
 
     
-    df1_selected_1.rename(columns=lambda x: x.strip(), inplace=True)
-    df1_selected_1.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
+    df_thc.rename(columns=lambda x: x.strip(), inplace=True)
+    df_thc.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
 
     df_baru_2 = df_thc[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE': 'Total Transaksi'})
 
     df_baru_3 = pd.merge(df_thc[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
     df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
 
-    
+
     df_temp = pd.merge(df1_selected_1, df1_selected, on=['ID', 'NAMA'], how='left')
     
     df2 = pd.merge(df_temp, df_baru_3, on=['ID', 'NAMA'], how='left')
