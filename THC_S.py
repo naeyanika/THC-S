@@ -96,6 +96,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     
     df1_selected_1.rename(columns=lambda x: x.strip(), inplace=True)
     df1_selected_1.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
+
+    st.write("Cek Data")
+    st.write(df1_selected_1)
     
     df_baru_2 = df1_selected_1[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE': 'Total Transaksi'})
     
