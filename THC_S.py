@@ -26,7 +26,7 @@ if uploaded_files:
         dfs[file.name] = df
 
 # Nama Dataframe
-if 'pinjaman_na.xlsx' in dfs:
+if 'DbSimpanan.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
 if 'THC.xlsx' in dfs:
     df_thc = dfs['THC.xlsx']
