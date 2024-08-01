@@ -143,11 +143,11 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df.drop(columns=['Client ID'], inplace=True)
     # menambahkan selisih saldo di sihara
-    merged_df = merged_df.merge(pivot_table_simpanan, on='ID', how='left')
-    merged_df['Saldo Akhir'] = pivot_table_simpanan['Db Sihara'] - pivot_table_simpanan['Cr Sihara']
+    merged_df2 = merged_df.merge(df1, on='ID', how='left')
+    merged_df2['Saldo Akhir'] = df1['Db Sihara'] - df1['Cr Sihara']
 
     st.write("THC Sihara:")
-    st.write(merged_df)
+    st.write(merged_df2)
 
     # Pensiun
     df_pensiun = pd.read_excel('THC S.xlsx')
