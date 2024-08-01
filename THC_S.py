@@ -166,12 +166,12 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df1_pensiun = df_pensiun[selected_columns]
     df1_pensiun['Sisa'] = df1_pensiun['Db Pensiun'] - df1_pensiun['Cr Pensiun']
 
-    merged_df5 = df1_pensiun.merge(df_pensiun[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
+    merged_df5 = df1_pensiun.merge(df_pensiun[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     merged_df5.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df5.drop(columns=['Client ID'], inplace=True)
 
     desired_order = [
-        'ID Anggota','Nama','Center','Kelompok','Saldo Sebelumnya','Db Pensiun','Cr Pensiun','Sisa'
+        'ID','Nama','Center','Kelompok','Saldo Sebelumnya','Db Pensiun','Cr Pensiun','Sisa'
     ]
     for col in desired_order:
         if col not in merged_df5.columns:
