@@ -143,6 +143,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write(df_final_5)
 
     # Pensiun
+    df_pensiun = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
     df1_pensiun = df_pensiun[selected_columns]
     df1_pensiun['Sisa'] = df1_pensiun['Db Pensiun'] - df1_pensiun['Cr Pensiun']
