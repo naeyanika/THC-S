@@ -35,11 +35,16 @@ df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
 
 # Filter sihara
 df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
+st.write("Sihara:")
+st.write(df_sihara)
 # Filter sukarela
 df_sukarela = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
+st.write("Sukarela:")
+st.write(df_sukarela)
 # Filter hariraya
 df_pensiun = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
-
+st.write("Pensiun:")
+st.write(df_pensiun)
 
 # Pivot table simpanan
 pivot_table_simpanan = pd.pivot_table(df_thc,
