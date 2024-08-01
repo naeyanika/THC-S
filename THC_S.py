@@ -140,9 +140,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 ]
     df_final_5 = df_final_5.reindex(columns=ordered_columns)
 
-    st.write("Sihara:")
-    st.write(df_final_5)
-
     # Pensiun
     df_pensiun = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
