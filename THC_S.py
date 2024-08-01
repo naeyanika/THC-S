@@ -28,8 +28,9 @@ if uploaded_files:
 
 # Db Simpanan
 if 'DbSimpanan.xlsx' in dfs:
-df_db = dfs['DbSimpanan.xlsx']
-        df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
+    df_db = dfs['DbSimpanan.xlsx']
+        
+df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
                     (df_db['Sts. Simpanan'] == 'AKTIF')]
 
 # Filter sihara
