@@ -67,7 +67,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
                                 aggfunc='sum')
     
     desired_order = [
-            'ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara','Cr Sihara','Db Pensiun','Cr Pensiun','Db Sukarela','Cr Sukarela',
+            'ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara','Cr Sihara','Db Pensiun','Cr Pensiun','Db Sukarela','Cr Sukarela', 'Db Total','Cr Total'
             ]
 
     pivot_table_simpanan = pivot_table_simpanan[desired_order]
