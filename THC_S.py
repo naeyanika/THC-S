@@ -104,17 +104,19 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
 
     df_temp = pd.merge(df1_selected_1, df1_selected, on=['ID', 'NAMA'], how='left')
-    
     df2 = pd.merge(df_temp, df_baru_3, on=['ID', 'NAMA'], how='left')
-    df_sample = df1_selected_1[(df1_selected_1['Db Sihara'] == df1_selected_1['Modus_Sihara'])].groupby('ID').size().reset_index()
+
+    df_sample = df_thc[(df_thc['Db Sihara'] == df_thc['Modus_Sihara'])].groupby('ID').size().reset_index()
     df_sample.rename(columns={0: 'Transaksi Sesuai'}, inplace=True)
     df_final = pd.merge(df2, df_sample, on='ID', how='left')
-    df_sample_2 = df1_selected_1[(df1_selected_1['Db Sihara'] == 0)].groupby('ID').size().reset_index()
+
+    df_sample_2 = df_thc[(df_thc['Db Sihara'] == 0)].groupby('ID').size().reset_index()
     df_sample_2.rename(columns={0: 'Transaksi Nol'}, inplace=True)
     df_final_2 = pd.merge(df_final, df_sample_2, on='ID', how='left')
     df_final_2 = df_final_2.drop(columns=['CENTER_y', 'KEL_y'])
     df_final_2['Transaksi Nol'] = df_final_2['Transaksi Nol'].fillna(0).astype(int)
-    df_final_5 = df1_selected_1[(df1_selected_1['Db Sihara'] != 0) & (df1_selected_1['Db Sihara'] != df1_selected_1['Modus_Sihara'])].groupby('ID').size().reset_index()
+    
+    df_final_5 = df_thc[(df_thc['Db Sihara'] != 0) & (df_thc['Db Sihara'] != df_thc['Modus_Sihara'])].groupby('ID').size().reset_index()
     df_final_5.rename(columns={0: 'Transaksi Tidak Sesuai'}, inplace=True)
     df_final_5 = pd.merge(df_final_2, df_final_5, on='ID', how='left')
     df_final_5['Transaksi Tidak Sesuai'].fillna(0, inplace=True)
@@ -156,22 +158,36 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_sukarela = pd.read_excel('THC S.xlsx')
 
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sukarela', 'Cr Sukarela']
+    
     df1_sukarela = df_sukarela[selected_columns]
-    df['Modus Sukarela'] = df.groupby(['ID', 'NAMA'])['Db Sukarela'].transform(lambda x: x.mode()[0])
+    
+    df_thc['Modus Sukarela'] = df_thc.groupby(['ID', 'NAMA'])['Db Sukarela'].transform(lambda x: x.mode()[0])
     df_selected = df.loc[:, ['ID', 'NAMA', 'Modus Sukarela']]
     df_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
     
     # Handle duplicate IDs
     df1_sukarela['Nilai Modus'] = df1_sukarela['ID'].map(df_selected.set_index('ID')['Modus Sukarela'].to_dict())
     
+    df_baru_2.rename(columns=lambda x: x.strip(), inplace=True)
+    df_baru_2.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
+
+    df_baru_2 = df_thc[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE':'Total Transaksi'})
+    df_baru_2.head()
+    df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
+
+    df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+    df_baru_3
+
     df2 = df1_sukarela.merge(df_baru_3, on=['ID', 'NAMA'], how='left')
     df2.drop_duplicates(subset=['ID', 'NAMA', 'Db Sukarela', 'Cr Sukarela', 'Nilai Modus'], keep='first', inplace=True)
     df2_cleaned = df2.drop(['CENTER_y', 'KEL_y'], axis=1)
     df2_cleaned = df2_cleaned.rename(columns={'CENTER_x': 'CENTER', 'KEL_x': 'KEL'})
-    df_sample_2 = df[(df['Db Sukarela'] != 0) | (df['Db Sukarela'] == df['Modus Sukarela'])].groupby('ID').size().reset_index()
+    
+    df_sample_2 = df_thc[(df['Db Sukarela'] != 0) | (df['Db Sukarela'] == df['Modus Sukarela'])].groupby('ID').size().reset_index()
     df_sample_2.rename(columns={0: 'Total Menabung > 0'}, inplace=True)
     df_final_3 = pd.merge(df2_cleaned, df_sample_2, on='ID', how='left')
-    df_sample = df[(df['Db Sukarela'] != 0) & (df['Db Sukarela'] != df['Modus Sukarela'])].groupby('ID').size().reset_index()
+    
+    df_sample = df_thc[(df['Db Sukarela'] != 0) & (df_thc['Db Sukarela'] != df_thc['Modus Sukarela'])].groupby('ID').size().reset_index()
     df_sample.rename(columns={0: 'Transaksi > 0 & ≠ Modus Sukarela'}, inplace=True)
     df_final = pd.merge(df_final_3, df_sample, on='ID', how='left')
     df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].fillna(0).astype(int)
