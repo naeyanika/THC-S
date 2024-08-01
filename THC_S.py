@@ -25,14 +25,11 @@ if uploaded_files:
         df = pd.read_excel(file, engine='openpyxl')
         dfs[file.name] = df
 
-# Nama Dataframe
-if 'DbSimpanan.xlsx' in dfs:
-    df_db = dfs['DbSimpanan.xlsx']
-if 'THC.xlsx' in dfs:
-    df_thc = dfs['THC.xlsx']
 
 # Db Simpanan
-df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
+if 'DbSimpanan.xlsx' in dfs:
+df_db = dfs['DbSimpanan.xlsx']
+        df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
                     (df_db['Sts. Simpanan'] == 'AKTIF')]
 
 # Filter sihara
@@ -49,11 +46,13 @@ st.write("Pensiun:")
 st.write(df_pensiun)
 
 # Pivot table simpanan
-pivot_table_simpanan = pd.pivot_table(df_thc,
+if 'THC.xlsx' in dfs:
+    df_thc = dfs['THC.xlsx']
+    pivot_table_simpanan = pd.pivot_table(df_thc,
                             index=['ID', 'NAMA', 'CENTER', 'KEL'],
                             values=['Db Sihara', 'Cr Sihara', 'Db Pensiun', 'Cr Pensiun', 'Db Sukarela', 'Cr Sukarela', 'Db Wajib', 'Cr Wajib', 'Db Total', 'Cr Total'],
                             aggfunc='sum')
-pivot_table_simpanan.to_excel('THC S.xlsx')
+    pivot_table_simpanan.to_excel('THC S.xlsx')
 
 # Membaca df1 sebagai thc simpanan
 df1 = pd.read_excel('THC S.xlsx')
