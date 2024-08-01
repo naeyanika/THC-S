@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import io
 
 st.title('Aplikasi Pengolahan THC Simpanan')
 st.markdown("""
@@ -138,7 +139,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 ]
     df_final_5 = df_final_5.reindex(columns=ordered_columns)
     merged_df = df_final_5.merge(df_sihara[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
-    
+
     st.write("THC Sihara:")
     st.write(df_final_5)
 
