@@ -146,10 +146,14 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     # menambahkan selisih saldo di sihara
     merged_df2 = merged_df.merge(df1[['ID', 'Db Sihara', 'Cr Sihara']], left_on='ID Anggota', right_on='ID', how='left')
     merged_df2['Saldo Akhir'] = merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
-
+    
+    desired_order[
+        'ID','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Sisa','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
+    ]
+    final_sihara = merged_df2[desired_order]
 
     st.write("THC Sihara:")
-    st.write(merged_df2)
+    st.write(final_sihara)
 
     # Pensiun
     df_pensiun = pd.read_excel('THC S.xlsx')
@@ -202,7 +206,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     # Download links for all
     for name, df in {
-        'Sihara.xlsx': merged_df,
+        'Sihara.xlsx': final_sihara,
         'Sukarela.xlsx': df_final,
         'Pensiun.xlsx': df1_pensiun
     }.items():
