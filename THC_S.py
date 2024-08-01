@@ -16,9 +16,8 @@ ID, Dummy, NAMA, CENTER, KEL, HARI, JAM, STAF, TRANS. DATE, Db Qurban, Cr Qurban
 """)
 
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
-
+dfs = {}  # Inisialisasi dfs di luar conditional
 if uploaded_files:
-    dfs = {}
     for file in uploaded_files:
         df = pd.read_excel(file, engine='openpyxl')
         dfs[file.name] = df
@@ -26,6 +25,13 @@ if uploaded_files:
 # Nama Dataframe
 db_simpanan_path = 'DbSimpanan.xlsx'
 thc_path = 'THC.xlsx'
+
+if db_simpanan_path in dfs and thc_path in dfs:
+    df_db = dfs[db_simpanan_path]
+    df_thc = dfs[thc_path]
+    # Lanjutkan dengan pengolahan data
+else:
+    st.error("Harap unggah file 'DbSimpanan.xlsx' dan 'THC.xlsx'")
 
 if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
