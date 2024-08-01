@@ -26,7 +26,7 @@ if uploaded_files:
         dfs[file.name] = df
 
 # Nama Dataframe
-df_db = pd.read_excel('DbSimpanan.xlsx', skiprows=1)
+df_db = pd.read_excel('DbSimpanan.xlsx')
 df_thc = pd.read_excel('THC.xlsx')
 
 # Db Simpanan
