@@ -116,7 +116,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_final_2 = df_final_2.drop(columns=['CENTER_y', 'KEL_y'])
     df_final_2['Transaksi Nol'] = df_final_2['Transaksi Nol'].fillna(0).astype(int)
     
-    df_final_5 = df_thc[(df_thc['Db Sihara'] != 0) & (df_thc['Db Sihara'] != df_thc['Modus_Sihara'])].groupby('ID').size().reset_index()
+    df_final_5 = df_thc[(df_thc['Db Sihara'] != 0) & (df_thc['Db Sihara'] != df1_selected['Modus_Sihara'])].groupby('ID').size().reset_index()
     df_final_5.rename(columns={0: 'Transaksi Tidak Sesuai'}, inplace=True)
     df_final_5 = pd.merge(df_final_2, df_final_5, on='ID', how='left')
     df_final_5['Transaksi Tidak Sesuai'].fillna(0, inplace=True)
