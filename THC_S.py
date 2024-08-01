@@ -126,5 +126,80 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     st.write("Sihara:")
     st.write(df_final_5)
+
+    buffer_sihara = io.BytesIO()
+    with pd.ExcelWriter(buffer_sihara, engine='xlsxwriter') as writer:
+        df_final_5.to_excel(writer, index=False, sheet_name='Sheet1')
+    
+    buffer_sihara.seek(0)
+    
+    df_pensiun = pd.read_excel('THC S.xlsx')
+    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
+    df1_pensiun = df_pensiun[selected_columns]
+    df1_pensiun['Sisa'] = df1_pensiun['Db Pensiun'] - df1_pensiun['Cr Pensiun']
+    
+    buffer_pensiun = io.BytesIO()
+    with pd.ExcelWriter(buffer_pensiun, engine='xlsxwriter') as writer:
+        df1_pensiun.to_excel(writer, index=False, sheet_name='Sheet1')
+    
+    buffer_pensiun.seek(0)
+    
+    df_sukarela = pd.read_excel('THC S.xlsx')
+    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sukarela', 'Cr Sukarela']
+    df1_sukarela = df_sukarela[selected_columns]
+    df['Modus Sukarela'] = df.groupby(['ID', 'NAMA'])['Db Sukarela'].transform(lambda x: x.mode()[0])
+    df_selected = df.loc[:, ['ID', 'NAMA', 'Modus Sukarela']]
+    df_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+    
+    # Handle duplicate IDs
+    df1_sukarela['Nilai Modus'] = df1_sukarela['ID'].map(df_selected.set_index('ID')['Modus Sukarela'].to_dict())
+    
+    df2 = df1_sukarela.merge(df_baru_3, on=['ID', 'NAMA'], how='left')
+    df2.drop_duplicates(subset=['ID', 'NAMA', 'Db Sukarela', 'Cr Sukarela', 'Nilai Modus'], keep='first', inplace=True)
+    df2_cleaned = df2.drop(['CENTER_y', 'KEL_y'], axis=1)
+    df2_cleaned = df2_cleaned.rename(columns={'CENTER_x': 'CENTER', 'KEL_x': 'KEL'})
+    df_sample_2 = df[(df['Db Sukarela'] != 0) | (df['Db Sukarela'] == df['Modus Sukarela'])].groupby('ID').size().reset_index()
+    df_sample_2.rename(columns={0: 'Total Menabung > 0'}, inplace=True)
+    df_final_3 = pd.merge(df2_cleaned, df_sample_2, on='ID', how='left')
+    df_sample = df[(df['Db Sukarela'] != 0) & (df['Db Sukarela'] != df['Modus Sukarela'])].groupby('ID').size().reset_index()
+    df_sample.rename(columns={0: 'Transaksi > 0 & ≠ Modus Sukarela'}, inplace=True)
+    df_final = pd.merge(df_final_3, df_sample, on='ID', how='left')
+    df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].fillna(0).astype(int)
+    
+    buffer_sukarela = io.BytesIO()
+    with pd.ExcelWriter(buffer_sukarela, engine='xlsxwriter') as writer:
+        df_final.to_excel(writer, index=False, sheet_name='Sheet1')
+    
+    buffer_sukarela.seek(0)
+
+    return buffer_sihara, buffer_pensiun, buffer_sukarela
+
+uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
+if uploaded_file is not None:
+    buffer_sihara, buffer_pensiun, buffer_sukarela = process_data(uploaded_file)
+    st.success('File sudah di olah silakan download dibawah ini!')
+
+    st.download_button(
+        label="Download Sihara File",
+        data=buffer_sihara,
+        file_name='Processed_Sihara.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+    st.download_button(
+        label="Download Pensiun File",
+        data=buffer_pensiun,
+        file_name='Processed_Pensiun.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+    st.download_button(
+        label="Download Sukarela File",
+        data=buffer_sukarela,
+        file_name='Processed_Sukarela.xlsx',
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+
 else:
     st.error("File DbSimpanan.xlsx atau THC.xlsx tidak ditemukan. Pastikan file ada di lokasi yang benar.")
