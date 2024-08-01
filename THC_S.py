@@ -65,7 +65,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
                                 index=['ID', 'NAMA', 'CENTER', 'KEL'],
                                 values=['Db Sihara', 'Cr Sihara', 'Db Pensiun', 'Cr Pensiun', 'Db Sukarela', 'Cr Sukarela', 'Db Wajib', 'Cr Wajib', 'Db Total', 'Cr Total'],
                                 aggfunc='sum')
-    
+    st.write("THC Simpanan")
+    st.write(pivot_table_simpanan)
+        
     pivot_table_simpanan.to_excel('THC S.xlsx')
 
     # Membaca df1 sebagai thc simpanan
@@ -85,9 +87,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     
     df1_selected_1.rename(columns=lambda x: x.strip(), inplace=True)
     df1_selected_1.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
-
-    st.write(df1_selected_1.head())
-    st.write(df1_selected_1.columns)
     
     df_baru_2 = df1_selected_1[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE': 'Total Transaksi'})
     
