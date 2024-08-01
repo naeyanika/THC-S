@@ -36,6 +36,9 @@ else:
 if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
     df_thc = dfs['THC.xlsx']
+
+    st.write("THC:")
+    st.write(df_thc)
     
     # Db Simpanan
     df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
