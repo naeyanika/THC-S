@@ -119,7 +119,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_final_5['Transaksi Tidak Sesuai'] = df_final_5['Transaksi Tidak Sesuai'].astype(int)
     df_final_5['Sisa'].fillna(0, inplace=True)
     df_final_5['Sisa'] = df_final_5['Sisa'].astype(int)
-
+    df_final_5.rename(columns={'Sisa': 'Selisih Transaksi'}, inplace=True)
 
     df_final_5= df_final_5.rename(columns={
     'ID':'ID Anggota',
@@ -133,7 +133,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     ordered_columns = [
     'ID Anggota', 'Nama', 'Center', 'Kelompok', 'Modus Sihara',
-    'Nilai Modus', 'Sisa', 'Total Transaksi', 'Transaksi Sesuai',
+    'Nilai Modus', 'Selish Transaksi', 'Total Transaksi', 'Transaksi Sesuai',
     'Transaksi Nol', 'Transaksi Tidak Sesuai'
 ]
     df_final_5 = df_final_5.reindex(columns=ordered_columns)
@@ -148,7 +148,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
 
     desired_order = [
-        'ID Anggota','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Sisa','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
+        'ID Anggota','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Selisih Transaksi','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
     ]
     for col in desired_order:
         if col not in merged_df2.columns:
