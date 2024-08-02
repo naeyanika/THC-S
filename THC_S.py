@@ -42,8 +42,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write(df)
     
     # Db Simpanan
-    df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
-                        (df_db['Sts. Simpanan'] == 'AKTIF')]
+    df_simpanan = df_db[(df_db['Tgl. Keluar'] == 'AKTIF')]
 
     # Filter sihara
     df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
