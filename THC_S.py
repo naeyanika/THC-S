@@ -163,12 +163,12 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_pensiun = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
     df1_pensiun = df_pensiun[selected_columns]
-    df1_pensiun['Sisa'] = df1_pensiun['Db Pensiun'] - df1_pensiun['Cr Pensiun']
 
     merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     merged_df5.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df5.drop(columns=['Client ID'], inplace=True)
     merged_df5['Saldo Sebelumnya'].fillna(0, inplace=True)
+    merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
     desired_order = [
         'ID','Nama','Center','Kelompok','Saldo Sebelumnya','Db Pensiun','Cr Pensiun','Sisa'
     ]
@@ -222,6 +222,8 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df_final.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df_final.drop(columns=['Client ID'], inplace=True)
     merged_df_final['Saldo Sebelumnya'].fillna(0, inplace=True)
+    merged_df_final['Sisa'] = merged_df_final['Saldo Sebelumnya'] + merged_df_final['Db Sukarela'] - merged_df_final['Cr Sukarela']
+    
     desired_order = ['ID','NAMA','CENTER','KEL','Saldo Sebelumnya','Db Sukarela','Cr Sukarela','Nilai Modus','Total Transaksi','Total Menabung > 0','Transaksi > 0 & ≠ Modus Sukarela'
                     ]
     for col in desired_order:
