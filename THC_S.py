@@ -144,7 +144,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     # menambahkan selisih saldo di sihara
     merged_df2 = merged_df.merge(df1[['ID', 'Db Sihara', 'Cr Sihara']], left_on='ID Anggota', right_on='ID', how='left')
-    merged_df2['Saldo Akhir'] = merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
+    merged_df2['Saldo Akhir'] = merged_df2['Saldo Sebelumnya'] + merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
     merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
 
     desired_order = [
