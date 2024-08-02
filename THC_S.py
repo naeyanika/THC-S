@@ -222,9 +222,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df_final.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df_final.drop(columns=['Client ID'], inplace=True)
     merged_df_final['Saldo Sebelumnya'].fillna(0, inplace=True)
-    merged_df_final['Sisa'] = merged_df_final['Saldo Sebelumnya'] + merged_df_final['Db Sukarela'] - merged_df_final['Cr Sukarela']
-    
-    desired_order = ['ID','NAMA','CENTER','KEL','Saldo Sebelumnya','Db Sukarela','Cr Sukarela','Nilai Modus','Total Transaksi','Total Menabung > 0','Transaksi > 0 & ≠ Modus Sukarela'
+    merged_df_final['Sisa Saldo'] = merged_df_final['Saldo Sebelumnya'] + merged_df_final['Db Sukarela'] - merged_df_final['Cr Sukarela']
+
+    desired_order = ['ID','NAMA','CENTER','KEL','Saldo Sebelumnya','Db Sukarela','Cr Sukarela','Sisa Saldo','Nilai Modus','Total Transaksi','Total Menabung > 0','Transaksi > 0 & ≠ Modus Sukarela'
                     ]
     for col in desired_order:
         if col not in merged_df_final.columns:
