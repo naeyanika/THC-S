@@ -168,7 +168,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     merged_df5.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df5.drop(columns=['Client ID'], inplace=True)
-
+    merged_df5['Saldo Sebelumnya'].fillna(0, inplace=True)
     desired_order = [
         'ID','Nama','Center','Kelompok','Saldo Sebelumnya','Db Pensiun','Cr Pensiun','Sisa'
     ]
@@ -221,7 +221,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df_final = df_final.merge(df_sukarela_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     merged_df_final.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df_final.drop(columns=['Client ID'], inplace=True)
-
+    merged_df_final['Saldo Sebelumnya'].fillna(0, inplace=True)
     desired_order = ['ID','NAMA','CENTER','KEL','Saldo Sebelumnya','Db Sukarela','Cr Sukarela','Nilai Modus','Total Transaksi','Total Menabung > 0','Transaksi > 0 & ≠ Modus Sukarela'
                     ]
     for col in desired_order:
