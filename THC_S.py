@@ -179,6 +179,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     final_pensiun = merged_df5[desired_order]
 
+    st.write("Tipe Data Kolom:")
+    st.write(merged_df5.dtypes)
+    
     st.write("THC Pensiun:")
     st.write(final_pensiun)   
 
