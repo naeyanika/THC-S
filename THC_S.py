@@ -165,13 +165,26 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
     df1_pensiun = df_pensiun[selected_columns]
 
+# Konversi tipe data
+    df1_pensiun['ID'] = df1_pensiun['ID'].astype(str)
+    df1_pensiun['NAMA'] = df1_pensiun['NAMA'].astype(str)
+    df1_pensiun['CENTER'] = df1_pensiun['CENTER'].astype(str)
+    df1_pensiun['KEL'] = df1_pensiun['KEL'].astype(str)
+
     merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
-    merged_df5.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
+    merged_df5.rename(columns={
+        'Saldo': 'Saldo Sebelumnya',
+        'NAMA': 'Nama',
+        'CENTER': 'Center',
+        'KEL': 'Kelompok'
+    }, inplace=True)
+
     merged_df5.drop(columns=['Client ID'], inplace=True)
     merged_df5['Saldo Sebelumnya'].fillna(0, inplace=True)
     merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
+
     desired_order = [
-        'ID','Nama','Center','Kelompok','Saldo Sebelumnya','Db Pensiun','Cr Pensiun','Sisa'
+        'ID', 'Nama', 'Center', 'Kelompok', 'Saldo Sebelumnya', 'Db Pensiun', 'Cr Pensiun', 'Sisa'
     ]
     for col in desired_order:
         if col not in merged_df5.columns:
@@ -180,10 +193,13 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     final_pensiun = merged_df5[desired_order]
 
     st.write("Tipe Data Kolom:")
-    st.write(merged_df5.dtypes)
-    
+    st.write(final_pensiun.dtypes)
+
+    st.write("Data Pensiun (5 baris pertama):")
+    st.write(final_pensiun.head())
+
     st.write("THC Pensiun:")
-    st.write(final_pensiun)   
+    st.write(final_pensiun)
 
     # Sukarela
     df_sukarela = pd.read_excel('THC S.xlsx')
