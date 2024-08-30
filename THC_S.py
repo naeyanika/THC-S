@@ -55,7 +55,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write(df_sukarela_2)
     
     # Filter pensiun
-    df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
+    df_pensiun_2 = df_db[(df_db['Product Name'] == 'Simpanan Pensiun')]
     st.write("Db Pensiun:")
     st.write(df_pensiun_2)
 
