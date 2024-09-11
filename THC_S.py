@@ -19,21 +19,26 @@ ID, Dummy, NAMA, CENTER, KEL, HARI, JAM, STAF, TRANS. DATE, Db Qurban, Cr Qurban
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
 dfs = {}  
 
+
 if uploaded_files:
     for file in uploaded_files:
-        df = pd.read_excel(file, engine='openpyxl')
-
+        if file.name == 'DbSimpanan.xlsx':
+            df = pd.read_excel(file, engine='openpyxl', skiprows=1)
+        else:
+            df = pd.read_excel(file, engine='openpyxl')
         df.columns = df.columns.str.strip()
 
         dfs[file.name] = df
 
-# Nama Dataframe
 db_simpanan_path = 'DbSimpanan.xlsx'
 thc_path = 'THC.xlsx'
 
 if db_simpanan_path in dfs and thc_path in dfs:
     df_db = dfs[db_simpanan_path]
     df = dfs[thc_path]
+
+    st.write("THC:")
+    st.write(df)
 else:
     st.error("Harap unggah file 'DbSimpanan.xlsx' dan 'THC.xlsx'")
 
@@ -41,7 +46,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
     df = dfs['THC.xlsx']
 
-    st.write(df_db.columns)
     st.write("THC:")
     st.write(df)
     
