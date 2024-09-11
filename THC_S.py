@@ -49,7 +49,7 @@ else:
     st.info("Silakan unggah file DbSimpanan.xlsx dan THC.xlsx.")
 
 # Db Simpanan
-df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
+    df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
                     (df_db['Sts. Simpanan'] == 'AKTIF')]
 
 # Filter sihara
