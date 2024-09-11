@@ -243,7 +243,18 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write("THC Sukarela:")
     st.write(final_sukarela)
 
-    # Download links for all
+
+    def download_multiple_sheets():
+        buffer = io.BytesIO()
+        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        # Menulis tiap dataframe ke sheet yang berbeda
+            final_sihara.to_excel(writer, index=False, sheet_name='Sihara')
+            final_pensiun.to_excel(writer, index=False, sheet_name='Pensiun')
+            final_sukarela.to_excel(writer, index=False, sheet_name='Sukarela')
+        buffer.seek(0)
+        return buffer
+
+
     for name, df in {
         'Sihara.xlsx': final_sihara,
         'Pensiun.xlsx': final_pensiun,
@@ -259,6 +270,15 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
             file_name=name,
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
+
+
+    buffer_all = download_multiple_sheets()
+    st.download_button(
+        label="Unduh Semua Anomali Simpanan.xlsx",
+        data=buffer_all.getvalue(),
+        file_name="Semua_Anomali_Simpanan.xlsx",
+        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
 else:
     st.error("File DbSimpanan.xlsx atau THC.xlsx tidak ditemukan. Pastikan file ada di lokasi yang benar.")
