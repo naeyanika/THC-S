@@ -41,6 +41,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
     df = dfs['THC.xlsx']
 
+    st.write(df_db.columns)
     st.write("THC:")
     st.write(df)
     
