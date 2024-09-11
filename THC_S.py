@@ -37,37 +37,26 @@ if db_simpanan_path in dfs and thc_path in dfs:
     df_db = dfs[db_simpanan_path]
     df = dfs[thc_path]
 
-    st.write("THC:")
-    st.write(df)
 else:
     st.error("Harap unggah file 'DbSimpanan.xlsx' dan 'THC.xlsx'")
 
 if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
     df = dfs['THC.xlsx']
-
-    st.write("THC:")
-    st.write(df)
-    
-    # Db Simpanan
+#-----------------------------Sesi Filter
+    #Filter Db Simpanan
     df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
                         (df_db['Sts. Simpanan'] == 'AKTIF')]
-
     # Filter sihara
     df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
-    st.write("Db Sihara:")
-    st.write(df_sihara)
-    
+
     # Filter sukarela
     df_sukarela_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
-    st.write("Db Sukarela:")
-    st.write(df_sukarela_2)
-    
+
     # Filter pensiun
     df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
-    st.write("Db Pensiun:")
-    st.write(df_pensiun_2)
 
+#----------------------------Sesi Pivot
     # Pivot table simpanan
     df = df.rename(columns=lambda x: x.strip())
     pivot_table_simpanan = pd.pivot_table(df,
@@ -80,15 +69,13 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
             ]
     desired_order = [col for col in desired_order if col in pivot_table_simpanan.columns]
     pivot_table_simpanan = pivot_table_simpanan[desired_order]
-    
-    st.write("THC Simpanan")
-    st.write(pivot_table_simpanan)
 
     pivot_table_simpanan.to_excel('THC S.xlsx')
 
     # Membaca df1 sebagai thc simpanan
     df1 = pd.read_excel('THC S.xlsx')
 
+#-------------Sihara Session
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
     df1_selected_1 = df1[selected_columns]
     
@@ -151,7 +138,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df.drop(columns=['Client ID'], inplace=True)
     merged_df['Saldo Sebelumnya'].fillna(0, inplace=True)
-    # menambahkan selisih saldo di sihara
+#------------------Tambah selisih saldo di sihara
     merged_df2 = merged_df.merge(df1[['ID', 'Db Sihara', 'Cr Sihara']], left_on='ID Anggota', right_on='ID', how='left')
     merged_df2['Saldo Akhir'] = merged_df2['Saldo Sebelumnya'] + merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
     merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
@@ -166,15 +153,12 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     final_sihara = merged_df2[desired_order]
 
-    st.write("THC Sihara:")
-    st.write(final_sihara)
-
-    # Pensiun
+#-------------Pensiun Session
     df_pensiun = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
     df1_pensiun = df_pensiun[selected_columns]
 
-# Konversi tipe data
+#-------------Konversi tipe data
     df1_pensiun['ID'] = df1_pensiun['ID'].astype(str)
     df1_pensiun['NAMA'] = df1_pensiun['NAMA'].astype(str)
     df1_pensiun['CENTER'] = df1_pensiun['CENTER'].astype(str)
@@ -204,7 +188,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.write("THC Pensiun:")
     st.write(final_pensiun)
 
-    # Sukarela
+#-------------Sukarela
     df_sukarela = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sukarela', 'Cr Sukarela']
     df1_sukarela = df_sukarela[selected_columns]
