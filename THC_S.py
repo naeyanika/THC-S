@@ -276,7 +276,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     st.download_button(
         label="Unduh Semua Anomali Simpanan.xlsx",
         data=buffer_all.getvalue(),
-        file_name="Semua_Anomali_Simpanan.xlsx",
+        file_name="Anomali Simpanan.xlsx",
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
