@@ -17,17 +17,36 @@ ID, Dummy, NAMA, CENTER, KEL, HARI, JAM, STAF, TRANS. DATE, Db Qurban, Cr Qurban
 6. Untuk DbSimpanan, tidak udah di edit lagi bagian isi nya karena otomatis memotong header nya, jadi hanya di ubah namanya menjadi DbSimpanan.xlsx 
 """)
 
+#Upload excel file
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
 
+dfs = {}
 if uploaded_files:
-    dfs = {}
     for file in uploaded_files:
         df = pd.read_excel(file, engine='openpyxl')
         dfs[file.name] = df
 
-# Nama Dataframe
-df_db = pd.read_excel('DbSimpanan.xlsx')
-df_thc = pd.read_excel('THC.xlsx')
+uploaded_file_db = st.file_uploader("Unggah file DbSimpanan.xlsx", type=["xlsx"])
+uploaded_file_thc = st.file_uploader("Unggah file THC.xlsx", type=["xlsx"])
+
+if uploaded_file_db and uploaded_file_thc:
+    # Baca file DbSimpanan.xlsx
+    try:
+        df_db = pd.read_excel(uploaded_file_db, skiprows=1)
+        st.write("Data DbSimpanan:")
+        st.write(df_db)
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat memproses file DbSimpanan: {e}")
+    
+    # Baca file THC.xlsx
+    try:
+        df_thc = pd.read_excel(uploaded_file_thc)
+        st.write("Data THC:")
+        st.write(df_thc)
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat memproses file THC: {e}")
+else:
+    st.info("Silakan unggah file DbSimpanan.xlsx dan THC.xlsx.")
 
 # Db Simpanan
 df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
