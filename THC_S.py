@@ -17,10 +17,14 @@ ID, Dummy, NAMA, CENTER, KEL, HARI, JAM, STAF, TRANS. DATE, Db Qurban, Cr Qurban
 """)
 
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
-dfs = {}  # Inisialisasi dfs di luar conditional
+dfs = {}  
+
 if uploaded_files:
     for file in uploaded_files:
         df = pd.read_excel(file, engine='openpyxl')
+
+        df.columns = df.columns.str.strip()
+
         dfs[file.name] = df
 
 # Nama Dataframe
@@ -30,7 +34,6 @@ thc_path = 'THC.xlsx'
 if db_simpanan_path in dfs and thc_path in dfs:
     df_db = dfs[db_simpanan_path]
     df = dfs[thc_path]
-    # Lanjutkan dengan pengolahan data
 else:
     st.error("Harap unggah file 'DbSimpanan.xlsx' dan 'THC.xlsx'")
 
@@ -43,7 +46,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     
     # Db Simpanan
     df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
-                    (df_db['Sts. Simpanan'] == 'AKTIF')]
+                        (df_db['Sts. Simpanan'] == 'AKTIF')]
 
     # Filter sihara
     df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
