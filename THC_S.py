@@ -8,12 +8,11 @@ st.markdown("""
 ## Catatan:
 1. Buat file baru dengan nama THC.xlsx lalu isi dengan data yang ada di "Format Data THC Gabungan.xlsb" di sheet atau lembar "Hasil Pivot 1"
 2. Untuk data yang diambil hanya dari ID s.d Cr Total (simpanan)
-3. Nama Lembar atau Sheet ganti jadi "Lembar1"
-4. Untuk kolom CENTER dan KEL (text-to-coloumn) 
--delimited, tab, general. Yang tadinya Center 001 Kel 01 menjadi Center 1 Kel 1.
+3. Nama Lembar atau Sheet ganti jadi "Lembar1" <DbSimpanan>
+4. Untuk kolom CENTER dan KEL (text-to-coloumn) -delimited → tab → general. Yang tadinya Center 001 Kel 01 menjadi Center 1 Kel 1. <DbSimpanan>
 5. Untuk menyamakan Header excel gunakan seperti format dibawah ini (Koma nya jangan diikuti) 
-ID, Dummy, NAMA, CENTER, KEL, HARI, JAM, STAF, TRANS. DATE, Db Qurban, Cr Qurban, Db Khusus, Cr Khusus, Db Sihara, Cr Sihara, Db Pensiun, Cr Pensiun, Db Pokok, Cr Pokok, Db SIPADAN, Cr SIPADAN, Db Sukarela, Cr Sukarela, Db Wajib, Cr Wajib, Db Total, Cr Total.
-6. 
+[ ID, Dummy, NAMA, CENTER, KEL, HARI, JAM, STAF, TRANS. DATE, Db Qurban, Cr Qurban, Db Khusus, Cr Khusus, Db Sihara, Cr Sihara, Db Pensiun, Cr Pensiun, Db Pokok, Cr Pokok, Db SIPADAN, Cr SIPADAN, Db Sukarela, Cr Sukarela, Db Wajib, Cr Wajib, Db Total, Cr Total ]
+6. Untuk nama sheet pada DbSimpanan.xlsx dibiarkan "IA_SimpananDB" jangan di ubah lagi.
 """)
 
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
