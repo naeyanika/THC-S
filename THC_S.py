@@ -164,6 +164,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     final_sihara = merged_df2[desired_order]
 
+    st.write("THC Sihara:")
+    st.write(final_sihara)
+
 #-------------Pensiun Session
     # Baca data pensiun dan hanya memilih beberapa kolom
     df_pensiun = pd.read_excel('THC S.xlsx')
