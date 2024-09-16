@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import io
 
+
 st.title('Aplikasi Pengolahan THC Simpanan')
 st.markdown("""
 ## File yang dibutuhkan
@@ -21,12 +22,21 @@ st.markdown("""
 
 3. **TAK.xlsx**
    - Data yang diambil dari **TAK.xlsx** yang sudah diolah di poin **"2.TAK"**.
-   - File ini digunakan untuk melihat apakah anggota tersebut masih aktif atau sudah keluar.            
+   - File ini digunakan untuk melihat apakah anggota tersebut masih aktif atau sudah keluar.
+
+4. **SimpananSiharaRpt.xlsx**
+   - Data ini diambil dari modul detail simpanan pada **Operasional** → **Laporan Operasional Cabang** → **Detail Simpanan**.
+   - Pilih tanggal sesuai periode audit.
+   - Hapus bagian header sebelum di upload.
+   - Ganti Nama Header **Member's Status** menjadi **Member Status**
+
+    Jadi kita membutuhkan 4 file yaitu : :blue-background[THC.xlsx], :blue-background[DbSimpanan.xlsx], :blue-background[TAK.xlsx], dan :blue-background[SimpananSiharaRpt.xlsx]. Pastikan nama file sudah sesuai dengan instruksi.              
 """)
 
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
-dfs = {}  
+dfs = {}
 
+required_files = ['DbSimpanan.xlsx', 'THC.xlsx', 'TAK.xlsx', 'SimpananSiharaRpt.xlsx']
 
 if uploaded_files:
     for file in uploaded_files:
@@ -35,25 +45,14 @@ if uploaded_files:
         else:
             df = pd.read_excel(file, engine='openpyxl')
         df.columns = df.columns.str.strip()
-
         dfs[file.name] = df
 
-db_simpanan_path = 'DbSimpanan.xlsx'
-thc_path = 'THC.xlsx'
-tak_path = 'TAK.xlsx'
+    if all(file in dfs for file in required_files):
+        df_db = dfs['DbSimpanan.xlsx']
+        df = dfs['THC.xlsx']
+        df_tak = dfs['TAK.xlsx']
+        df_shr = dfs['SimpananSiharaRpt.xlsx']
 
-if db_simpanan_path in dfs and thc_path in dfs:
-    df_db = dfs[db_simpanan_path]
-    df = dfs[thc_path]
-    df_tak = dfs[tak_path]
-
-else:
-    st.error("Harap unggah file 'DbSimpanan.xlsx' dan 'THC.xlsx'")
-
-if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
-    df_db = dfs['DbSimpanan.xlsx']
-    df = dfs['THC.xlsx']
-    df_tak =dfs['TAK.xlsx']
 #-----------------------------Sesi Filter
     #Filter Db Simpanan
     df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
@@ -86,10 +85,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     # Membaca df1 sebagai thc simpanan
     df1 = pd.read_excel('THC S.xlsx')
 
-    st.write("THC S:")
-    st.write(df1)
-
-#-------------Sihara Session
+#-------------Arsip Sesi Sihara 
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
     df1_selected_1 = df1[selected_columns]
     
@@ -152,7 +148,7 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
     merged_df.drop(columns=['Client ID'], inplace=True)
     merged_df['Saldo Sebelumnya'].fillna(0, inplace=True)
-#------------------Tambah selisih saldo di sihara
+# Tambah selisih saldo di sihara
     merged_df2 = merged_df.merge(df1[['ID', 'Db Sihara', 'Cr Sihara']], left_on='ID Anggota', right_on='ID', how='left')
     merged_df2['Saldo Akhir'] = merged_df2['Saldo Sebelumnya'] + merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
     merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
@@ -167,8 +163,37 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     final_sihara = merged_df2[desired_order]
 
-    st.write("THC Sihara:")
-    st.write(final_sihara)
+#-------------Sihara Session
+#Pilih data yang diperlukan untuk kolom THC S
+    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
+    df1_sihara = df1[selected_columns]
+
+#Pilih data yang di perlukan untuk kolom SiharaRpt
+    selected_columns = ['Center', 'Group', 'Client ID', 'Name', 'Deposit Standard', 'Member Status']
+    df1_shr = df_shr[selected_columns]
+    
+    #Ubah Uama Kolom
+    rename_dict = {
+    'Client ID': 'ID',
+    'Name': 'NAMA',
+    'Center': 'CENTER',
+    'Group': 'KEL',
+    'Deposit Standard': 'PAKET',
+    'Member Status': 'STATUS'
+    }
+    df1_shr =df1_shr.rename(columns=rename_dict)
+
+    # Ubah Urutan Kolom
+    desired_order = ['ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS']
+    df1_shr = df1_shr[desired_order]
+
+    #VLOOKUP df1_sihara dan df1_shr
+    merge_column = 'ID'
+    df_sihara_merge = pd.merge(df1_sihara, df1_shr, on=merge_column, suffixes=('_df1_sihara','_df1_shr'))
+
+    
+    st.write("Sihara:")
+    st.write(df_sihara_merge)
 
 #-------------Pensiun Session
     # Baca data pensiun dan hanya memilih beberapa kolom
@@ -236,8 +261,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     df_baru_2 = df[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE':'Total Transaksi'})
     df_baru_2.head()
-    df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
 
+
+    df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
     df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
 
     df2 = df1_sukarela.merge(df_baru_3, on=['ID', 'NAMA'], how='left')
@@ -305,13 +331,19 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
         )
 
 
-    buffer_all = download_multiple_sheets()
-    st.download_button(
+        buffer_all = download_multiple_sheets()
+        st.download_button(
         label="Unduh Semua Anomali Simpanan.xlsx",
         data=buffer_all.getvalue(),
         file_name="Anomali Simpanan.xlsx",
         mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
+        )
 
+
+
+
+    else:
+        missing_files = [file for file in required_files if file not in dfs]
+        st.error(f"File berikut tidak ditemukan: {', '.join(missing_files)}. Pastikan semua file yang diperlukan diunggah.")
 else:
-    st.error("File DbSimpanan.xlsx atau THC.xlsx tidak ditemukan. Pastikan file ada di lokasi yang benar.")
+    st.warning("Silakan unggah file Excel yang diperlukan.")
