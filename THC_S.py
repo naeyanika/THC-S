@@ -199,7 +199,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     merged_df5['Status'] = merged_df5['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID ANGGOTA'].values else 'AKTIF')
 
     # Anomali
-    merged_df5['Anomali'] = merged_df5.apply(lambda row: 1 if row['Sisa'] < row['Saldo Sebelumnya'] else 0, axis=1)
+    merged_df5['Anomali'] = merged_df5.apply(
+    lambda row: 0 if row['Status'] == 'KELUAR' else (1 if row['Sisa'] < row['Saldo Sebelumnya'] else 0), axis=1
+    )
 
     # Susun ulang dataframe
     desired_order = [
