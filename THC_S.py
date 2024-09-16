@@ -386,11 +386,11 @@ if uploaded_files:
             if col not in merged_df_final.columns:
                 merged_df_final[col] = 0
 
-            final_sukarela = merged_df_final[desired_order]
+        final_sukarela = merged_df_final[desired_order]
+        st.write("THC Sukarela:")
+        st.write(final_sukarela)
 
 
-            st.write("THC Sukarela:")
-            st.write(final_sukarela)
 
 
         def download_multiple_sheets():
