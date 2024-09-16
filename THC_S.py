@@ -282,7 +282,7 @@ if uploaded_files:
 
         df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge23]
 
-        t.write("THC Sihara:")
+        st.write("THC Sihara:")
         st.write(df_sihara_merge_22)
 
 #-------------Pensiun Session
