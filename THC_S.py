@@ -228,6 +228,13 @@ if uploaded_files:
                                             right_on='ID Anggota',
                                             how='left'
     )
+    df_sihara_merge_22.rename(columns={'Total Transaksi': 'TOTAL TRANSAKSI'}, inplace=True)
+
+    desired_order_merge22 = [
+        'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI'
+    ]
+
+    df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge22]
 
     st.write("Sihara:")
     st.write(df_sihara_merge_22)
