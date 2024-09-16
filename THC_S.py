@@ -386,51 +386,52 @@ if uploaded_files:
         if col not in merged_df_final.columns:
             merged_df_final[col] = 0
 
-    final_sukarela = merged_df_final[desired_order]
+        final_sukarela = merged_df_final[desired_order]
 
 
-    st.write("THC Sukarela:")
-    st.write(final_sukarela)
+        st.write("THC Sukarela:")
+        st.write(final_sukarela)
 
 
-    def download_multiple_sheets():
-        buffer = io.BytesIO()
-        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        def download_multiple_sheets():
+            buffer = io.BytesIO()
+        
+            with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
         # Menulis tiap dataframe ke sheet yang berbeda
-            df_sihara_merge_22.to_excel(writer, index=False, sheet_name='Sihara')
-            final_pensiun.to_excel(writer, index=False, sheet_name='Pensiun')
-            final_sukarela.to_excel(writer, index=False, sheet_name='Sukarela')
-        buffer.seek(0)
-        return buffer
+                df_sihara_merge_22.to_excel(writer, index=False, sheet_name='Sihara')
+                final_pensiun.to_excel(writer, index=False, sheet_name='Pensiun')
+                final_sukarela.to_excel(writer, index=False, sheet_name='Sukarela')
+        
+            buffer.seek(0)
+            return buffer
 
 
-    for name, df in {
+        for name, df in {
         'Sihara.xlsx': df_sihara_merge_22,
         'Pensiun.xlsx': final_pensiun,
         'Sukarela.xlsx': final_sukarela
-    }.items():
-        buffer = io.BytesIO()
-        with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-            df.to_excel(writer, index=False, sheet_name='Sheet1')
-        buffer.seek(0)
-        st.download_button(
-            label=f"Unduh {name}",
-            data=buffer.getvalue(),
-            file_name=name,
-            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }.items():
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                 df.to_excel(writer, index=False, sheet_name='Sheet1')
+        
+            buffer.seek(0)
+        
+            st.download_button(
+                label=f"Unduh {name}",
+                data=buffer.getvalue(),
+                file_name=name,
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
 
 
         buffer_all = download_multiple_sheets()
         st.download_button(
-        label="Unduh Semua Anomali Simpanan.xlsx",
-        data=buffer_all.getvalue(),
-        file_name="Anomali Simpanan.xlsx",
-        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            label="Unduh Semua Anomali Simpanan.xlsx",
+            data=buffer_all.getvalue(),
+            file_name="Anomali Simpanan.xlsx",
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-
-
-
 
     else:
         missing_files = [file for file in required_files if file not in dfs]
