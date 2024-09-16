@@ -204,17 +204,27 @@ if uploaded_files:
     }
     df_sihara_merge = df_sihara_merge.rename(columns=rename_dict)
 
-    df_sihara_merge['Selisih Transaksi'] = df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
+    df_sihara_merge = df_sihara_merge.merge(df_sihara[['Client ID', 'Saldo']],
+                                      left_on='ID',
+                                      right_on='Client ID',
+                                      how='left')
+    df_sihara_merge.rename(columns={'Saldo': 'SALDO SEBELUMNYA'}, inplace=True)
+    df_sihara_merge.drop(columns=['Client ID'], inplace=True)
+    df_sihara_merge['SALDO SEBELUMNYA'].fillna(0, inplace=True)
 
-    result_df_sihara = pd.merge(
-        df_sihara_merge, final_sihara,
-        left_on='ID',
-        right_on='ID Anggota',
-        how='left'
-    )
+    df_sihara_merge['SELISIH TRANSAKSI'] = df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
+    df_sihara_merge['SALDO AKHIR'] = df_sihara_merge['SALDO SEBELUMNYA'] + df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
+    
+    df_sihara_merge.drop(columns=['Db Sihara', 'Cr Sihara'], inplace=True)
+    
+    desired_order = [
+        'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 'SELISIH TRANSAKSI', 'SALDO AKHIR'
+    ]
+
+    df_sihara_merge = df_sihara_merge[desired_order_merge]
 
     st.write("Sihara:")
-    st.write(result_df_sihara)
+    st.write(df_sihara_merge)
 
 #-------------Pensiun Session
     # Baca data pensiun dan hanya memilih beberapa kolom
