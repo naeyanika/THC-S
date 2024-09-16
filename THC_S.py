@@ -174,7 +174,7 @@ if uploaded_files:
     selected_columns = ['Center', 'Group', 'Client ID', 'Name', 'Deposit Standard', 'Member Status']
     df1_shr = df_shr[selected_columns]
     
-    #Ubah Uama Kolom
+    #Ubah Nama Kolom
     rename_dict = {
     'Client ID': 'ID',
     'Name': 'NAMA',
@@ -237,6 +237,38 @@ if uploaded_files:
     ]
 
     df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge22]
+
+    # Buat kriteria
+    def count_transactions(group, paket_value):
+        sesuai = (group['Db Sihara'] == paket_value).sum()
+        tidak_sesuai = ((group['Db Sihara'] != paket_value) & (group['Db Sihara'] != 0)).sum()
+        nol = (group['Db Sihara'] == 0).sum()
+        return pd.Series({'TRANSAKSI SESUAI': sesuai, 
+                      'TRANSAKSI TIDAK SESUAI': tidak_sesuai, 
+                      'TRANSAKSI NOL': nol})
+
+    # Group by ID dan pasangkan fungsi
+    transaction_counts = df.groupby('ID').apply(
+    lambda x: count_transactions(x, 
+                                 df_sihara_merge_22.loc[df_sihara_merge_22['ID'] == x.name, 'PAKET'].values[0])
+)
+
+    # Merge transaksi menghitung ulang ke df_sihara_merge_22
+    df_sihara_merge_22 = df_sihara_merge_22.merge(transaction_counts, left_on='ID', right_index=True, how='left')
+
+    # Fill NaN 
+    df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].fillna(0)
+
+    # Convert kolom ke int
+    df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].astype(int)
+
+    desired_order_merge23 = [
+    'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 
+    'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI', 'TRANSAKSI SESUAI',
+    'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL'
+]
+
+    df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge23]
 
     st.write("Sihara:")
     st.write(df_sihara_merge_22)
