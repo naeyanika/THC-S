@@ -86,6 +86,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     # Membaca df1 sebagai thc simpanan
     df1 = pd.read_excel('THC S.xlsx')
 
+    st.write("THC S:")
+    st.write(df1)
+
 #-------------Sihara Session
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
     df1_selected_1 = df1[selected_columns]
