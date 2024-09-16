@@ -67,8 +67,6 @@ if uploaded_files:
     df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
 
 #----------------------------Sesi Pivot
-    st.write("TRX")
-    st.write(df)
     # Pivot table simpanan
     df = df.rename(columns=lambda x: x.strip())
     pivot_table_simpanan = pd.pivot_table(df,
@@ -238,30 +236,35 @@ if uploaded_files:
 
     df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge22]
 
-    # Buat kriteria
+    # Step 1: Create a function to count different types of transactions
     def count_transactions(group, paket_value):
-        sesuai = (group['Db Sihara'] == paket_value).sum()
-        tidak_sesuai = ((group['Db Sihara'] != paket_value) & (group['Db Sihara'] != 0)).sum()
+        if paket_value is None or pd.isna(paket_value):
+            paket_value = 0  # Default value if PAKET is not found
+            sesuai = (group['Db Sihara'] == paket_value).sum()
+            tidak_sesuai = ((group['Db Sihara'] != paket_value) & (group['Db Sihara'] != 0)).sum()
         nol = (group['Db Sihara'] == 0).sum()
         return pd.Series({'TRANSAKSI SESUAI': sesuai, 
                       'TRANSAKSI TIDAK SESUAI': tidak_sesuai, 
                       'TRANSAKSI NOL': nol})
 
-    # Group by ID dan pasangkan fungsi
+# Step 2: Create a dictionary mapping ID to PAKET
+    paket_dict = dict(zip(df_sihara_merge_22['ID'], df_sihara_merge_22['PAKET']))
+
+# Step 3: Group by ID and apply the function
     transaction_counts = df.groupby('ID').apply(
-    lambda x: count_transactions(x, 
-                                 df_sihara_merge_22.loc[df_sihara_merge_22['ID'] == x.name, 'PAKET'].values[0])
+    lambda x: count_transactions(x, paket_dict.get(x.name))
 )
 
-    # Merge transaksi menghitung ulang ke df_sihara_merge_22
+# Step 4: Merge the transaction counts back to df_sihara_merge_22
     df_sihara_merge_22 = df_sihara_merge_22.merge(transaction_counts, left_on='ID', right_index=True, how='left')
 
-    # Fill NaN 
+# Step 5: Fill NaN values with 0 for the new columns
     df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].fillna(0)
 
-    # Convert kolom ke int
+# Step 6: Convert the new columns to integers
     df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].astype(int)
 
+# Step 7: Reorder the columns to include the new columns
     desired_order_merge23 = [
     'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 
     'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI', 'TRANSAKSI SESUAI',
@@ -269,6 +272,7 @@ if uploaded_files:
 ]
 
     df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge23]
+
 
     st.write("Sihara:")
     st.write(df_sihara_merge_22)
