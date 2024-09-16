@@ -193,7 +193,7 @@ if uploaded_files:
 
     # Ubah urutan kolom
     desired_order_merge = [
-        'ID','NAMA_df1_sihara','CENTER_df1_sihara','KEL_df1_sihara','PAKET','Db Sihara','Cr Sihara','STATUS'
+        'ID','NAMA_df1_sihara','CENTER_df1_sihara','KEL_df1_sihara','PAKET', 'STATUS','Db Sihara','Cr Sihara'
     ]
     df_sihara_merge = df_sihara_merge[desired_order_merge]
 
@@ -203,11 +203,18 @@ if uploaded_files:
         'KEL_df1_sihara': 'KEL'
     }
     df_sihara_merge = df_sihara_merge.rename(columns=rename_dict)
-   
+
     df_sihara_merge['Selisih Transaksi'] = df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
-   
+
+    result_df_sihara = pd.merge(
+        df_sihara_merge, final_sihara,
+        left_on='ID',
+        right_on='ID Anggota',
+        how='left'
+    )
+
     st.write("Sihara:")
-    st.write(df_sihara_merge)
+    st.write(result_df_sihara)
 
 #-------------Pensiun Session
     # Baca data pensiun dan hanya memilih beberapa kolom
