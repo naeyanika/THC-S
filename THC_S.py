@@ -195,16 +195,16 @@ if uploaded_files:
     desired_order_merge = [
         'ID','NAMA_df1_sihara','CENTER_df1_sihara','KEL_df1_sihara','PAKET','Db Sihara','Cr Sihara','STATUS'
     ]
-    df_sihara_merge = df_sihara_merge[desired_order]
+    df_sihara_merge = df_sihara_merge[desired_order_merge]
 
     rename_dict = {
         'NAMA_df1_sihara': 'NAMA',
         'CENTER_df1_sihara': 'CENTER',
         'KEL_df1_sihara': 'KEL'
     }
-    
     df_sihara_merge = df_sihara_merge.merge(column=rename_dict)
-    
+
+
     st.write("Sihara:")
     st.write(df_sihara_merge)
 
