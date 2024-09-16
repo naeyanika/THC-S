@@ -85,6 +85,8 @@ if uploaded_files:
     # Membaca df1 sebagai thc simpanan
     df1 = pd.read_excel('THC S.xlsx')
 
+    st.write("TRX")
+    st.write(df1)
 #-------------Arsip Sesi Sihara 
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
     df1_selected_1 = df1[selected_columns]
