@@ -40,10 +40,12 @@ if uploaded_files:
 
 db_simpanan_path = 'DbSimpanan.xlsx'
 thc_path = 'THC.xlsx'
+tak_path = 'TAK.xlsx'
 
 if db_simpanan_path in dfs and thc_path in dfs:
     df_db = dfs[db_simpanan_path]
     df = dfs[thc_path]
+    df_tak = dfs[tak_path]
 
 else:
     st.error("Harap unggah file 'DbSimpanan.xlsx' dan 'THC.xlsx'")
@@ -51,6 +53,7 @@ else:
 if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df_db = dfs['DbSimpanan.xlsx']
     df = dfs['THC.xlsx']
+    df_tak =dfs['TAK.xlsx']
 #-----------------------------Sesi Filter
     #Filter Db Simpanan
     df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
@@ -210,7 +213,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
 
     st.write("THC Pensiun:")
     st.write(final_pensiun)
-
 #-------------Sukarela
     df_sukarela = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sukarela', 'Cr Sukarela']
