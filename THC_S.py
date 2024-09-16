@@ -203,8 +203,9 @@ if uploaded_files:
         'KEL_df1_sihara': 'KEL'
     }
     df_sihara_merge = df_sihara_merge.rename(columns=rename_dict)
-
-
+   
+    df_sihara_merge['Selisih Transaksi'] = df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
+   
     st.write("Sihara:")
     st.write(df_sihara_merge)
 
