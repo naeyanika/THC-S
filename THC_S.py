@@ -223,7 +223,7 @@ if uploaded_files:
 
     df_sihara_merge = df_sihara_merge[desired_order_merge2]
 
-    df_sihara_merge_22 = pd.merge(final_sihara, df_sihara_merge,
+    df_sihara_merge_22 = pd.merge(df_sihara_merge, final_sihara, 
                                             left_on='ID',
                                             right_on='ID Anggota',
                                             how='left'
