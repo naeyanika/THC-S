@@ -223,6 +223,12 @@ if uploaded_files:
 
     df_sihara_merge = df_sihara_merge[desired_order_merge2]
 
+    df_sihara_merge = df_sihara_merge.merge(final_sihara, df_sihara_merge,
+                                            left_on='ID'
+                                            right_on='ID Anggota',
+                                            how='left'
+    )
+
     st.write("Sihara:")
     st.write(df_sihara_merge)
 
