@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import os
 import io
 
@@ -240,9 +241,18 @@ if uploaded_files:
     def count_transactions(group, paket_value):
         if paket_value is None or pd.isna(paket_value):
             paket_value = 0  # Default value if PAKET is not found
-            sesuai = (group['Db Sihara'] == paket_value).sum()
-            tidak_sesuai = ((group['Db Sihara'] != paket_value) & (group['Db Sihara'] != 0)).sum()
-        nol = (group['Db Sihara'] == 0).sum()
+    
+    # Ensure 'Db Sihara' column exists
+        if 'Db Sihara' not in group.columns:
+            return pd.Series({'TRANSAKSI SESUAI': 0, 'TRANSAKSI TIDAK SESUAI': 0, 'TRANSAKSI NOL': 0})
+    
+    # Convert 'Db Sihara' to numeric, replacing any non-numeric values with NaN
+        db_sihara = pd.to_numeric(group['Db Sihara'], errors='coerce')
+    
+        sesuai = np.sum(db_sihara == paket_value)
+        tidak_sesuai = np.sum((db_sihara != paket_value) & (db_sihara != 0) & (~np.isnan(db_sihara)))
+        nol = np.sum(db_sihara == 0)
+    
         return pd.Series({'TRANSAKSI SESUAI': sesuai, 
                       'TRANSAKSI TIDAK SESUAI': tidak_sesuai, 
                       'TRANSAKSI NOL': nol})
