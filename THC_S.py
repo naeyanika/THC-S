@@ -217,11 +217,11 @@ if uploaded_files:
     
     df_sihara_merge.drop(columns=['Db Sihara', 'Cr Sihara'], inplace=True)
     
-    desired_order = [
+    desired_order_merge2 = [
         'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 'SELISIH TRANSAKSI', 'SALDO AKHIR'
     ]
 
-    df_sihara_merge = df_sihara_merge[desired_order_merge]
+    df_sihara_merge = df_sihara_merge[desired_order_merge2]
 
     st.write("Sihara:")
     st.write(df_sihara_merge)
