@@ -56,79 +56,79 @@ if uploaded_files:
 
 #-----------------------------Sesi Filter
     #Filter Db Simpanan
-    df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
+        df_simpanan = df_db[(df_db['Sts. Anggota'] == 'AKTIF') &
                         (df_db['Sts. Simpanan'] == 'AKTIF')]
     # Filter sihara
-    df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
+        df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
 
     # Filter sukarela
-    df_sukarela_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
+        df_sukarela_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Sukarela')]
 
     # Filter pensiun
-    df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
+        df_pensiun_2 = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Pensiun')]
 
 #----------------------------Sesi Pivot
     # Pivot table simpanan
-    df = df.rename(columns=lambda x: x.strip())
-    pivot_table_simpanan = pd.pivot_table(df,
+        df = df.rename(columns=lambda x: x.strip())
+        pivot_table_simpanan = pd.pivot_table(df,
                                 index=['ID', 'NAMA', 'CENTER', 'KEL'],
                                 values=['Db Sihara', 'Cr Sihara', 'Db Pensiun', 'Cr Pensiun', 'Db Sukarela', 'Cr Sukarela', 'Db Wajib', 'Cr Wajib', 'Db Total', 'Cr Total'],
                                 aggfunc='sum')
     
-    desired_order = [
+        desired_order = [
             'ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara','Cr Sihara','Db Pensiun','Cr Pensiun','Db Sukarela','Cr Sukarela', 'Db Wajib', 'Cr Wajib', 'Db Total','Cr Total'
             ]
-    desired_order = [col for col in desired_order if col in pivot_table_simpanan.columns]
-    pivot_table_simpanan = pivot_table_simpanan[desired_order]
+        desired_order = [col for col in desired_order if col in pivot_table_simpanan.columns]
+        pivot_table_simpanan = pivot_table_simpanan[desired_order]
 
-    pivot_table_simpanan.to_excel('THC S.xlsx')
+        pivot_table_simpanan.to_excel('THC S.xlsx')
 
     # Membaca df1 sebagai thc simpanan
-    df1 = pd.read_excel('THC S.xlsx')
+        df1 = pd.read_excel('THC S.xlsx')
 
 #-------------Arsip Sesi Sihara 
-    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
-    df1_selected_1 = df1[selected_columns]
+        selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
+        df1_selected_1 = df1[selected_columns]
     
-    df['Modus_Sihara'] = df.groupby(['ID', 'NAMA'])['Db Sihara'].transform(lambda x: x.mode()[0])
+        df['Modus_Sihara'] = df.groupby(['ID', 'NAMA'])['Db Sihara'].transform(lambda x: x.mode()[0])
     
-    df1_selected = df.loc[:, ['ID', 'NAMA', 'Modus_Sihara']]
-    df1_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
-    df1_selected['Nilai_Modus'] = df1_selected['ID'].map(df1_selected.set_index('ID')['Modus_Sihara'])
-    df1_selected_1['Sisa'] = df1_selected_1['Db Sihara'] - df1_selected_1['Cr Sihara']
+        df1_selected = df.loc[:, ['ID', 'NAMA', 'Modus_Sihara']]
+        df1_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+        df1_selected['Nilai_Modus'] = df1_selected['ID'].map(df1_selected.set_index('ID')['Modus_Sihara'])
+        df1_selected_1['Sisa'] = df1_selected_1['Db Sihara'] - df1_selected_1['Cr Sihara']
 
-    df.rename(columns=lambda x: x.strip(), inplace=True)
-    df.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
+        df.rename(columns=lambda x: x.strip(), inplace=True)
+        df.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
 
-    df_baru_2 = df[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE':'Total Transaksi'})
-    df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
-    df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+        df_baru_2 = df[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE':'Total Transaksi'})
+        df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
+        df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
 
     ################################
-    df_temp = pd.merge(df1_selected_1, df1_selected, on=['ID', 'NAMA'], how='left')
-    df2 = pd.merge(df_temp, df_baru_3, on=['ID', 'NAMA'], how='left')
+        df_temp = pd.merge(df1_selected_1, df1_selected, on=['ID', 'NAMA'], how='left')
+        df2 = pd.merge(df_temp, df_baru_3, on=['ID', 'NAMA'], how='left')
 
-    df_sample = df[(df['Db Sihara'] == df['Modus_Sihara'])].groupby('ID').size().reset_index()
-    df_sample.rename(columns={0: 'Transaksi Sesuai'}, inplace=True)
-    df_final = pd.merge(df2, df_sample, on='ID', how='left')
+        df_sample = df[(df['Db Sihara'] == df['Modus_Sihara'])].groupby('ID').size().reset_index()
+        df_sample.rename(columns={0: 'Transaksi Sesuai'}, inplace=True)
+        df_final = pd.merge(df2, df_sample, on='ID', how='left')
     ####################################
-    df_sample_2 = df[(df['Db Sihara'] == 0)].groupby('ID').size().reset_index()
-    df_sample_2.rename(columns={0: 'Transaksi Nol'}, inplace=True)
-    df_final_2 = pd.merge(df_final, df_sample_2, on='ID', how='left')
-    df_final_2 = df_final_2.drop(columns=['CENTER_y', 'KEL_y'])
-    df_final_2['Transaksi Nol'] = df_final_2['Transaksi Nol'].fillna(0)
-    df_final_2['Transaksi Nol'] = df_final_2['Transaksi Nol'].astype(int)
+        df_sample_2 = df[(df['Db Sihara'] == 0)].groupby('ID').size().reset_index()
+        df_sample_2.rename(columns={0: 'Transaksi Nol'}, inplace=True)
+        df_final_2 = pd.merge(df_final, df_sample_2, on='ID', how='left')
+        df_final_2 = df_final_2.drop(columns=['CENTER_y', 'KEL_y'])
+        df_final_2['Transaksi Nol'] = df_final_2['Transaksi Nol'].fillna(0)
+        df_final_2['Transaksi Nol'] = df_final_2['Transaksi Nol'].astype(int)
     ####################################
-    df_final_5 = df[(df['Db Sihara'] != 0) & (df['Db Sihara'] != df['Modus_Sihara'])].groupby('ID').size().reset_index()
-    df_final_5.rename(columns={0: 'Transaksi Tidak Sesuai'}, inplace=True)
-    df_final_5 = pd.merge(df_final_2, df_final_5, on='ID', how='left')
-    df_final_5['Transaksi Tidak Sesuai'].fillna(0, inplace=True)
-    df_final_5['Transaksi Tidak Sesuai'] = df_final_5['Transaksi Tidak Sesuai'].astype(int)
-    df_final_5['Sisa'].fillna(0, inplace=True)
-    df_final_5['Sisa'] = df_final_5['Sisa'].astype(int)
+        df_final_5 = df[(df['Db Sihara'] != 0) & (df['Db Sihara'] != df['Modus_Sihara'])].groupby('ID').size().reset_index()
+        df_final_5.rename(columns={0: 'Transaksi Tidak Sesuai'}, inplace=True)
+        df_final_5 = pd.merge(df_final_2, df_final_5, on='ID', how='left')
+        df_final_5['Transaksi Tidak Sesuai'].fillna(0, inplace=True)
+        df_final_5['Transaksi Tidak Sesuai'] = df_final_5['Transaksi Tidak Sesuai'].astype(int)
+        df_final_5['Sisa'].fillna(0, inplace=True)
+        df_final_5['Sisa'] = df_final_5['Sisa'].astype(int)
     
 
-    df_final_5= df_final_5.rename(columns={
+        df_final_5= df_final_5.rename(columns={
     'ID':'ID Anggota',
     'NAMA':'Nama',
     'CENTER_x':'Center',
@@ -138,43 +138,43 @@ if uploaded_files:
     'Nilai_Modus': 'Nilai Modus',
     'Modus_Sihara':'Modus Sihara'})
 
-    ordered_columns = [
+        ordered_columns = [
     'ID Anggota', 'Nama', 'Center', 'Kelompok', 'Modus Sihara',
     'Nilai Modus', 'Sisa', 'Total Transaksi', 'Transaksi Sesuai',
     'Transaksi Nol', 'Transaksi Tidak Sesuai'
 ]
-    df_final_5 = df_final_5.reindex(columns=ordered_columns)
+        df_final_5 = df_final_5.reindex(columns=ordered_columns)
 
-    merged_df = df_final_5.merge(df_sihara[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
-    merged_df.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
-    merged_df.drop(columns=['Client ID'], inplace=True)
-    merged_df['Saldo Sebelumnya'].fillna(0, inplace=True)
+        merged_df = df_final_5.merge(df_sihara[['Client ID', 'Saldo']], left_on='ID Anggota', right_on='Client ID', how='left')
+        merged_df.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
+        merged_df.drop(columns=['Client ID'], inplace=True)
+        merged_df['Saldo Sebelumnya'].fillna(0, inplace=True)
 # Tambah selisih saldo di sihara
-    merged_df2 = merged_df.merge(df1[['ID', 'Db Sihara', 'Cr Sihara']], left_on='ID Anggota', right_on='ID', how='left')
-    merged_df2['Saldo Akhir'] = merged_df2['Saldo Sebelumnya'] + merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
-    merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
-    merged_df2.rename(columns={'Sisa': 'Selisih Transaksi'}, inplace=True)
+        merged_df2 = merged_df.merge(df1[['ID', 'Db Sihara', 'Cr Sihara']], left_on='ID Anggota', right_on='ID', how='left')
+        merged_df2['Saldo Akhir'] = merged_df2['Saldo Sebelumnya'] + merged_df2['Db Sihara'] - merged_df2['Cr Sihara']
+        merged_df2.drop(columns=['ID', 'Db Sihara', 'Cr Sihara'], inplace=True)
+        merged_df2.rename(columns={'Sisa': 'Selisih Transaksi'}, inplace=True)
 
-    desired_order = [
+        desired_order = [
         'ID Anggota','Nama','Center','Kelompok','Saldo Sebelumnya','Modus Sihara','Nilai Modus','Selisih Transaksi','Saldo Akhir','Total Transaksi','Transaksi Sesuai','Transaksi Nol','Transaksi Tidak Sesuai'
     ]
-    for col in desired_order:
-        if col not in merged_df2.columns:
-            merged_df2[col] = 0
+        for col in desired_order:
+            if col not in merged_df2.columns:
+                merged_df2[col] = 0
 
-    final_sihara = merged_df2[desired_order]
+        final_sihara = merged_df2[desired_order]
 
 #-------------Sihara Session
 #Pilih data yang diperlukan untuk kolom THC S
-    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
-    df1_sihara = df1[selected_columns]
+        selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sihara', 'Cr Sihara']
+        df1_sihara = df1[selected_columns]
 
 #Pilih data yang di perlukan untuk kolom SiharaRpt
-    selected_columns = ['Center', 'Group', 'Client ID', 'Name', 'Deposit Standard', 'Member Status']
-    df1_shr = df_shr[selected_columns]
+        selected_columns = ['Center', 'Group', 'Client ID', 'Name', 'Deposit Standard', 'Member Status']
+        df1_shr = df_shr[selected_columns]
     
     #Ubah Nama Kolom
-    rename_dict = {
+        rename_dict = {
     'Client ID': 'ID',
     'Name': 'NAMA',
     'Center': 'CENTER',
@@ -182,215 +182,215 @@ if uploaded_files:
     'Deposit Standard': 'PAKET',
     'Member Status': 'STATUS'
     }
-    df1_shr =df1_shr.rename(columns=rename_dict)
+        df1_shr =df1_shr.rename(columns=rename_dict)
 
     # Ubah Urutan Kolom
-    desired_order = ['ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS']
-    df1_shr = df1_shr[desired_order]
+        desired_order = ['ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS']
+        df1_shr = df1_shr[desired_order]
 
     #VLOOKUP df1_sihara dan df1_shr
-    merge_column = 'ID'
-    df_sihara_merge = pd.merge(df1_sihara, df1_shr, on=merge_column, suffixes=('_df1_sihara','_df1_shr'))
+        merge_column = 'ID'
+        df_sihara_merge = pd.merge(df1_sihara, df1_shr, on=merge_column, suffixes=('_df1_sihara','_df1_shr'))
 
     # Ubah urutan kolom
-    desired_order_merge = [
+        desired_order_merge = [
         'ID','NAMA_df1_sihara','CENTER_df1_sihara','KEL_df1_sihara','PAKET', 'STATUS','Db Sihara','Cr Sihara'
     ]
-    df_sihara_merge = df_sihara_merge[desired_order_merge]
+        df_sihara_merge = df_sihara_merge[desired_order_merge]
 
-    rename_dict = {
+        rename_dict = {
         'NAMA_df1_sihara': 'NAMA',
         'CENTER_df1_sihara': 'CENTER',
         'KEL_df1_sihara': 'KEL'
     }
-    df_sihara_merge = df_sihara_merge.rename(columns=rename_dict)
+        df_sihara_merge = df_sihara_merge.rename(columns=rename_dict)
 
-    df_sihara_merge = df_sihara_merge.merge(df_sihara[['Client ID', 'Saldo']],
+        df_sihara_merge = df_sihara_merge.merge(df_sihara[['Client ID', 'Saldo']],
                                       left_on='ID',
                                       right_on='Client ID',
                                       how='left')
-    df_sihara_merge.rename(columns={'Saldo': 'SALDO SEBELUMNYA'}, inplace=True)
-    df_sihara_merge.drop(columns=['Client ID'], inplace=True)
-    df_sihara_merge['SALDO SEBELUMNYA'].fillna(0, inplace=True)
+        df_sihara_merge.rename(columns={'Saldo': 'SALDO SEBELUMNYA'}, inplace=True)
+        df_sihara_merge.drop(columns=['Client ID'], inplace=True)
+        df_sihara_merge['SALDO SEBELUMNYA'].fillna(0, inplace=True)
 
-    df_sihara_merge['SELISIH TRANSAKSI'] = df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
-    df_sihara_merge['SALDO AKHIR'] = df_sihara_merge['SALDO SEBELUMNYA'] + df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
+        df_sihara_merge['SELISIH TRANSAKSI'] = df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
+        df_sihara_merge['SALDO AKHIR'] = df_sihara_merge['SALDO SEBELUMNYA'] + df_sihara_merge['Db Sihara'] - df_sihara_merge['Cr Sihara']
     
-    df_sihara_merge.drop(columns=['Db Sihara', 'Cr Sihara'], inplace=True)
+        df_sihara_merge.drop(columns=['Db Sihara', 'Cr Sihara'], inplace=True)
     
-    desired_order_merge2 = [
+        desired_order_merge2 = [
         'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 'SELISIH TRANSAKSI', 'SALDO AKHIR'
     ]
 
-    df_sihara_merge = df_sihara_merge[desired_order_merge2]
+        df_sihara_merge = df_sihara_merge[desired_order_merge2]
 
-    df_sihara_merge_22 = pd.merge(df_sihara_merge, final_sihara, 
+        df_sihara_merge_22 = pd.merge(df_sihara_merge, final_sihara, 
                                             left_on='ID',
                                             right_on='ID Anggota',
                                             how='left'
     )
-    df_sihara_merge_22.rename(columns={'Total Transaksi': 'TOTAL TRANSAKSI'}, inplace=True)
+        df_sihara_merge_22.rename(columns={'Total Transaksi': 'TOTAL TRANSAKSI'}, inplace=True)
 
-    desired_order_merge22 = [
+        desired_order_merge22 = [
         'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI'
     ]
 
-    df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge22]
+        df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge22]
 
     # Step 1: Create a function to count different types of transactions
-    def count_transactions(group, paket_value):
-        if paket_value is None or pd.isna(paket_value):
-            paket_value = 0  # Default value if PAKET is not found
+        def count_transactions(group, paket_value):
+            if paket_value is None or pd.isna(paket_value):
+                paket_value = 0  # Default value if PAKET is not found
     
     # Ensure 'Db Sihara' column exists
-        if 'Db Sihara' not in group.columns:
-            return pd.Series({'TRANSAKSI SESUAI': 0, 'TRANSAKSI TIDAK SESUAI': 0, 'TRANSAKSI NOL': 0})
+            if 'Db Sihara' not in group.columns:
+                return pd.Series({'TRANSAKSI SESUAI': 0, 'TRANSAKSI TIDAK SESUAI': 0, 'TRANSAKSI NOL': 0})
     
 
-        db_sihara = pd.to_numeric(group['Db Sihara'], errors='coerce')
+            db_sihara = pd.to_numeric(group['Db Sihara'], errors='coerce')
     
-        sesuai = np.sum(db_sihara == paket_value)
-        tidak_sesuai = np.sum((db_sihara != paket_value) & (db_sihara != 0) & (~np.isnan(db_sihara)))
-        nol = np.sum(db_sihara == 0)
+            sesuai = np.sum(db_sihara == paket_value)
+            tidak_sesuai = np.sum((db_sihara != paket_value) & (db_sihara != 0) & (~np.isnan(db_sihara)))
+            nol = np.sum(db_sihara == 0)
     
-        return pd.Series({'TRANSAKSI SESUAI': sesuai, 
+            return pd.Series({'TRANSAKSI SESUAI': sesuai, 
                       'TRANSAKSI TIDAK SESUAI': tidak_sesuai, 
                       'TRANSAKSI NOL': nol})
 
 
-    paket_dict = dict(zip(df_sihara_merge_22['ID'], df_sihara_merge_22['PAKET']))
+        paket_dict = dict(zip(df_sihara_merge_22['ID'], df_sihara_merge_22['PAKET']))
 
 
-    transaction_counts = df.groupby('ID').apply(
-    lambda x: count_transactions(x, paket_dict.get(x.name))
-)
+        transaction_counts = df.groupby('ID').apply(
+        lambda x: count_transactions(x, paket_dict.get(x.name))
+                )
 
 
-    df_sihara_merge_22 = df_sihara_merge_22.merge(transaction_counts, left_on='ID', right_index=True, how='left')
+        df_sihara_merge_22 = df_sihara_merge_22.merge(transaction_counts, left_on='ID', right_index=True, how='left')
 
 
-    df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].fillna(0)
+        df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].fillna(0)
 
 
-    df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].astype(int)
+        df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].astype(int)
 
 
-    desired_order_merge23 = [
+        desired_order_merge23 = [
     'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 
     'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI', 'TRANSAKSI SESUAI', 'TRANSAKSI NOL','TRANSAKSI TIDAK SESUAI'
    ]
 
-    df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge23]
+        df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge23]
 
-    st.write("THC Sihara:")
-    st.write(df_sihara_merge_22)
+        t.write("THC Sihara:")
+        st.write(df_sihara_merge_22)
 
 #-------------Pensiun Session
     # Baca data pensiun dan hanya memilih beberapa kolom
-    df_pensiun = pd.read_excel('THC S.xlsx')
-    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
-    df1_pensiun = df_pensiun[selected_columns]
+        df_pensiun = pd.read_excel('THC S.xlsx')
+        selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
+        df1_pensiun = df_pensiun[selected_columns]
 
     #Konversi tipe data ke string
-    df1_pensiun['ID'] = df1_pensiun['ID'].astype(str)
-    df1_pensiun['NAMA'] = df1_pensiun['NAMA'].astype(str)
-    df1_pensiun['CENTER'] = df1_pensiun['CENTER'].astype(str)
-    df1_pensiun['KEL'] = df1_pensiun['KEL'].astype(str)
+        df1_pensiun['ID'] = df1_pensiun['ID'].astype(str)
+        df1_pensiun['NAMA'] = df1_pensiun['NAMA'].astype(str)
+        df1_pensiun['CENTER'] = df1_pensiun['CENTER'].astype(str)
+        df1_pensiun['KEL'] = df1_pensiun['KEL'].astype(str)
 
-    merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
+        merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     
     # Ganti nama kolom
-    merged_df5.rename(columns={
+        merged_df5.rename(columns={
         'Saldo': 'Saldo Sebelumnya',
         'NAMA': 'Nama',
         'CENTER': 'Center',
         'KEL': 'Kelompok'
-    }, inplace=True)
+        }, inplace=True)
     
     # Hapus kolom ID di df_s dan df_db
-    merged_df5.drop(columns=['Client ID'], inplace=True)
+        merged_df5.drop(columns=['Client ID'], inplace=True)
     
     # Jika ada data #N/A maka di replace dengan nol
-    merged_df5['Saldo Sebelumnya'].fillna(0, inplace=True)
+        merged_df5['Saldo Sebelumnya'].fillna(0, inplace=True)
     
     # Selisih sisa saldo diambil dari Saldo Sebelumnya + Db Pensiun - Cr Pensiun
-    merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
+        merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
     
     # Cek data tersebut masih aktif atau sudah keluar
-    merged_df5['Status'] = merged_df5['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID ANGGOTA'].values else 'AKTIF')
+        merged_df5['Status'] = merged_df5['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID ANGGOTA'].values else 'AKTIF')
 
     # Anomali
-    merged_df5['Anomali'] = merged_df5.apply(
-    lambda row: 0 if row['Status'] == 'KELUAR' else (1 if row['Sisa'] < row['Saldo Sebelumnya'] else 0), axis=1
+        merged_df5['Anomali'] = merged_df5.apply(
+        lambda row: 0 if row['Status'] == 'KELUAR' else (1 if row['Sisa'] < row['Saldo Sebelumnya'] else 0), axis=1
     )
 
     # Susun ulang dataframe
-    desired_order = [
+        desired_order = [
         'ID', 'Nama', 'Center', 'Kelompok', 'Status', 'Saldo Sebelumnya', 'Db Pensiun', 'Cr Pensiun', 'Sisa', 'Anomali'
     ]
-    for col in desired_order:
-        if col not in merged_df5.columns:
-            merged_df5[col] = 0
+        for col in desired_order:
+            if col not in merged_df5.columns:
+                merged_df5[col] = 0
 
-    final_pensiun = merged_df5[desired_order]
+        final_pensiun = merged_df5[desired_order]
 
-    st.write("THC Pensiun:")
-    st.write(final_pensiun)
+        st.write("THC Pensiun:")
+        st.write(final_pensiun)
 #-------------Sukarela
-    df_sukarela = pd.read_excel('THC S.xlsx')
-    selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sukarela', 'Cr Sukarela']
-    df1_sukarela = df_sukarela[selected_columns]
+        df_sukarela = pd.read_excel('THC S.xlsx')
+        selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Sukarela', 'Cr Sukarela']
+        df1_sukarela = df_sukarela[selected_columns]
     
-    df['Modus Sukarela'] = df.groupby(['ID', 'NAMA'])['Db Sukarela'].transform(lambda x: x.mode()[0])
-    df_selected = df.loc[:, ['ID', 'NAMA', 'Modus Sukarela']]
-    df_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
-    df1_sukarela['Nilai Modus'] = df1_sukarela['ID'].map(df_selected.set_index('ID')['Modus Sukarela'])
+        df['Modus Sukarela'] = df.groupby(['ID', 'NAMA'])['Db Sukarela'].transform(lambda x: x.mode()[0])
+        df_selected = df.loc[:, ['ID', 'NAMA', 'Modus Sukarela']]
+        df_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+        df1_sukarela['Nilai Modus'] = df1_sukarela['ID'].map(df_selected.set_index('ID')['Modus Sukarela'])
     
-    df_baru_2.rename(columns=lambda x: x.strip(), inplace=True)
-    df_baru_2.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
+        df_baru_2.rename(columns=lambda x: x.strip(), inplace=True)
+        df_baru_2.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
 
-    df_baru_2 = df[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE':'Total Transaksi'})
-    df_baru_2.head()
+        df_baru_2 = df[['ID', 'TRANS_DATE']].groupby('ID').nunique().reset_index().rename(columns={'TRANS_DATE':'Total Transaksi'})
+        df_baru_2.head()
 
 
-    df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
-    df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+        df_baru_3 = pd.merge(df[['ID', 'NAMA', 'CENTER', 'KEL']], df_baru_2, on='ID')
+        df_baru_3.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
 
-    df2 = df1_sukarela.merge(df_baru_3, on=['ID', 'NAMA'], how='left')
-    df2.drop_duplicates(subset=['ID', 'NAMA', 'Db Sukarela', 'Cr Sukarela', 'Nilai Modus'], keep='first', inplace=True)
-    df2_cleaned = df2.drop(['CENTER_y', 'KEL_y'], axis=1)
-    df2_cleaned = df2_cleaned.rename(columns={'CENTER_x': 'CENTER', 'KEL_x': 'KEL',})
+        df2 = df1_sukarela.merge(df_baru_3, on=['ID', 'NAMA'], how='left')
+        df2.drop_duplicates(subset=['ID', 'NAMA', 'Db Sukarela', 'Cr Sukarela', 'Nilai Modus'], keep='first', inplace=True)
+        df2_cleaned = df2.drop(['CENTER_y', 'KEL_y'], axis=1)
+        df2_cleaned = df2_cleaned.rename(columns={'CENTER_x': 'CENTER', 'KEL_x': 'KEL',})
     
-    df_sample_2 = df[(df['Db Sukarela'] != 0) + (df['Db Sukarela'] == df['Modus Sukarela'])].groupby('ID').size().reset_index()
-    df_sample_2.rename(columns={0: 'Total Menabung > 0'}, inplace=True)
-    df_final_3 = pd.merge(df2_cleaned, df_sample_2, on='ID', how='left')
+        df_sample_2 = df[(df['Db Sukarela'] != 0) + (df['Db Sukarela'] == df['Modus Sukarela'])].groupby('ID').size().reset_index()
+        df_sample_2.rename(columns={0: 'Total Menabung > 0'}, inplace=True)
+        df_final_3 = pd.merge(df2_cleaned, df_sample_2, on='ID', how='left')
     
-    df_sample = df[(df['Db Sukarela'] != 0) & (df['Db Sukarela'] != df['Modus Sukarela'])].groupby('ID').size().reset_index()
-    df_sample.rename(columns={0: 'Transaksi > 0 & ≠ Modus Sukarela'}, inplace=True)
-    df_sample.head()
+        df_sample = df[(df['Db Sukarela'] != 0) & (df['Db Sukarela'] != df['Modus Sukarela'])].groupby('ID').size().reset_index()
+        df_sample.rename(columns={0: 'Transaksi > 0 & ≠ Modus Sukarela'}, inplace=True)
+        df_sample.head()
 
-    df_final = pd.merge(df_final_3, df_sample, on='ID', how='left')
+        df_final = pd.merge(df_final_3, df_sample, on='ID', how='left')
 
-    df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].fillna(0)
-    df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].astype(int)
+        df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].fillna(0)
+        df_final['Transaksi > 0 & ≠ Modus Sukarela'] = df_final['Transaksi > 0 & ≠ Modus Sukarela'].astype(int)
     
-    merged_df_final = df_final.merge(df_sukarela_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
-    merged_df_final.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
-    merged_df_final.drop(columns=['Client ID'], inplace=True)
-    merged_df_final['Saldo Sebelumnya'].fillna(0, inplace=True)
-    merged_df_final['Sisa Saldo'] = merged_df_final['Saldo Sebelumnya'] + merged_df_final['Db Sukarela'] - merged_df_final['Cr Sukarela']
+        merged_df_final = df_final.merge(df_sukarela_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
+        merged_df_final.rename(columns={'Saldo': 'Saldo Sebelumnya'}, inplace=True)
+        merged_df_final.drop(columns=['Client ID'], inplace=True)
+        merged_df_final['Saldo Sebelumnya'].fillna(0, inplace=True)
+        merged_df_final['Sisa Saldo'] = merged_df_final['Saldo Sebelumnya'] + merged_df_final['Db Sukarela'] - merged_df_final['Cr Sukarela']
 
-    desired_order = ['ID','NAMA','CENTER','KEL','Saldo Sebelumnya','Db Sukarela','Cr Sukarela','Sisa Saldo','Nilai Modus','Total Transaksi','Total Menabung > 0','Transaksi > 0 & ≠ Modus Sukarela'
+        desired_order = ['ID','NAMA','CENTER','KEL','Saldo Sebelumnya','Db Sukarela','Cr Sukarela','Sisa Saldo','Nilai Modus','Total Transaksi','Total Menabung > 0','Transaksi > 0 & ≠ Modus Sukarela'
                     ]
-    for col in desired_order:
-        if col not in merged_df_final.columns:
-            merged_df_final[col] = 0
+        for col in desired_order:
+            if col not in merged_df_final.columns:
+                merged_df_final[col] = 0
 
-        final_sukarela = merged_df_final[desired_order]
+            final_sukarela = merged_df_final[desired_order]
 
 
-        st.write("THC Sukarela:")
-        st.write(final_sukarela)
+            st.write("THC Sukarela:")
+            st.write(final_sukarela)
 
 
         def download_multiple_sheets():
