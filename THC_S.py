@@ -176,9 +176,6 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     df1_pensiun['CENTER'] = df1_pensiun['CENTER'].astype(str)
     df1_pensiun['KEL'] = df1_pensiun['KEL'].astype(str)
 
-    # Cek data tersebut masih aktif atau sudah keluar
-    df1_pensiun['Status'] = df1_pensiun['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID'].values else 'AKTIF')
-
     merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
     
     # Ganti nama kolom
@@ -197,6 +194,9 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     
     # Selisih sisa saldo diambil dari Saldo Sebelumnya + Db Pensiun - Cr Pensiun
     merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
+    
+    # Cek data tersebut masih aktif atau sudah keluar
+    df1_pensiun['Status'] = df1_pensiun['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID'].values else 'AKTIF')
 
     # Anomali
     merged_df5['Anomali'] = merged_df5.apply(lambda row: 1 if row['Sisa'] < row['Saldo Sebelumnya'] else 0, axis=1)
