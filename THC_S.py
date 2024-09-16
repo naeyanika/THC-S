@@ -191,6 +191,19 @@ if uploaded_files:
     merge_column = 'ID'
     df_sihara_merge = pd.merge(df1_sihara, df1_shr, on=merge_column, suffixes=('_df1_sihara','_df1_shr'))
 
+    # Ubah urutan kolom
+    desired_order_merge = [
+        'ID','NAMA_df1_sihara','CENTER_df1_sihara','KEL_df1_sihara','PAKET','Db Sihara','Cr Sihara','STATUS'
+    ]
+    df_sihara_merge = df_sihara_merge[desired_order]
+
+    rename_dict = {
+        'NAMA_df1_sihara': 'NAMA',
+        'CENTER_df1_sihara': 'CENTER',
+        'KEL_df1_sihara': 'KEL'
+    }
+    
+    df_sihara_merge = df_sihara_merge.merge(column=rename_dict)
     
     st.write("Sihara:")
     st.write(df_sihara_merge)
