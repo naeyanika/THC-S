@@ -162,30 +162,45 @@ if 'DbSimpanan.xlsx' in dfs and 'THC.xlsx' in dfs:
     final_sihara = merged_df2[desired_order]
 
 #-------------Pensiun Session
+    # Baca data pensiun dan hanya memilih beberapa kolom
     df_pensiun = pd.read_excel('THC S.xlsx')
     selected_columns = ['ID', 'NAMA', 'CENTER', 'KEL', 'Db Pensiun', 'Cr Pensiun']
     df1_pensiun = df_pensiun[selected_columns]
 
-#-------------Konversi tipe data
+    #Konversi tipe data ke string
     df1_pensiun['ID'] = df1_pensiun['ID'].astype(str)
     df1_pensiun['NAMA'] = df1_pensiun['NAMA'].astype(str)
     df1_pensiun['CENTER'] = df1_pensiun['CENTER'].astype(str)
     df1_pensiun['KEL'] = df1_pensiun['KEL'].astype(str)
 
+    # Cek data tersebut masih aktif atau sudah keluar
+    df1_pensiun['Status'] = df1_pensiun['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID'].values else 'AKTIF')
+
     merged_df5 = df1_pensiun.merge(df_pensiun_2[['Client ID', 'Saldo']], left_on='ID', right_on='Client ID', how='left')
+    
+    # Ganti nama kolom
     merged_df5.rename(columns={
         'Saldo': 'Saldo Sebelumnya',
         'NAMA': 'Nama',
         'CENTER': 'Center',
         'KEL': 'Kelompok'
     }, inplace=True)
-
+    
+    # Hapus kolom ID di df_s dan df_db
     merged_df5.drop(columns=['Client ID'], inplace=True)
+    
+    # Jika ada data #N/A maka di replace dengan nol
     merged_df5['Saldo Sebelumnya'].fillna(0, inplace=True)
+    
+    # Selisih sisa saldo diambil dari Saldo Sebelumnya + Db Pensiun - Cr Pensiun
     merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
 
+    # Anomali
+    merged_df5['Anomali'] = merged_df5.apply(lambda row: 1 if row['Sisa'] < row['Saldo Sebelumnya'] else 0, axis=1)
+
+    # Susun ulang dataframe
     desired_order = [
-        'ID', 'Nama', 'Center', 'Kelompok', 'Saldo Sebelumnya', 'Db Pensiun', 'Cr Pensiun', 'Sisa'
+        'ID', 'Nama', 'Center', 'Kelompok', 'Status', 'Saldo Sebelumnya', 'Db Pensiun', 'Cr Pensiun', 'Sisa', 'Anomali'
     ]
     for col in desired_order:
         if col not in merged_df5.columns:
