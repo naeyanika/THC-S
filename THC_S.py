@@ -246,7 +246,7 @@ if uploaded_files:
         if 'Db Sihara' not in group.columns:
             return pd.Series({'TRANSAKSI SESUAI': 0, 'TRANSAKSI TIDAK SESUAI': 0, 'TRANSAKSI NOL': 0})
     
-    # Convert 'Db Sihara' to numeric, replacing any non-numeric values with NaN
+
         db_sihara = pd.to_numeric(group['Db Sihara'], errors='coerce')
     
         sesuai = np.sum(db_sihara == paket_value)
@@ -257,34 +257,32 @@ if uploaded_files:
                       'TRANSAKSI TIDAK SESUAI': tidak_sesuai, 
                       'TRANSAKSI NOL': nol})
 
-# Step 2: Create a dictionary mapping ID to PAKET
+
     paket_dict = dict(zip(df_sihara_merge_22['ID'], df_sihara_merge_22['PAKET']))
 
-# Step 3: Group by ID and apply the function
+
     transaction_counts = df.groupby('ID').apply(
     lambda x: count_transactions(x, paket_dict.get(x.name))
 )
 
-# Step 4: Merge the transaction counts back to df_sihara_merge_22
+
     df_sihara_merge_22 = df_sihara_merge_22.merge(transaction_counts, left_on='ID', right_index=True, how='left')
 
-# Step 5: Fill NaN values with 0 for the new columns
+
     df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].fillna(0)
 
-# Step 6: Convert the new columns to integers
+
     df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']] = df_sihara_merge_22[['TRANSAKSI SESUAI', 'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL']].astype(int)
 
-# Step 7: Reorder the columns to include the new columns
+
     desired_order_merge23 = [
     'ID', 'NAMA', 'CENTER', 'KEL', 'PAKET', 'STATUS', 'SALDO SEBELUMNYA', 
-    'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI', 'TRANSAKSI SESUAI',
-    'TRANSAKSI TIDAK SESUAI', 'TRANSAKSI NOL'
-]
+    'SELISIH TRANSAKSI', 'SALDO AKHIR', 'TOTAL TRANSAKSI', 'TRANSAKSI SESUAI', 'TRANSAKSI NOL','TRANSAKSI TIDAK SESUAI'
+   ]
 
     df_sihara_merge_22 = df_sihara_merge_22[desired_order_merge23]
 
-
-    st.write("Sihara:")
+    st.write("THC Sihara:")
     st.write(df_sihara_merge_22)
 
 #-------------Pensiun Session
@@ -399,7 +397,7 @@ if uploaded_files:
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
         # Menulis tiap dataframe ke sheet yang berbeda
-            final_sihara.to_excel(writer, index=False, sheet_name='Sihara')
+            df_sihara_merge_22.to_excel(writer, index=False, sheet_name='Sihara')
             final_pensiun.to_excel(writer, index=False, sheet_name='Pensiun')
             final_sukarela.to_excel(writer, index=False, sheet_name='Sukarela')
         buffer.seek(0)
@@ -407,7 +405,7 @@ if uploaded_files:
 
 
     for name, df in {
-        'Sihara.xlsx': final_sihara,
+        'Sihara.xlsx': df_sihara_merge_22,
         'Pensiun.xlsx': final_pensiun,
         'Sukarela.xlsx': final_sukarela
     }.items():
