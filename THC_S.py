@@ -27,7 +27,7 @@ st.markdown("""
 
 4. **SimpananSiharaRpt.xlsx**
    - Data ini diambil dari modul detail simpanan pada **Operasional** → **Laporan Operasional Cabang** → **Detail Simpanan**.
-   - Pilih tanggal sesuai periode audit.
+   - Pilih tanggal sepeti penarikan db simpanan.
    - Hapus bagian header sebelum di upload.
    - Ganti Nama Header **Member's Status** menjadi **Member Status**
 
