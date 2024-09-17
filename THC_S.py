@@ -19,6 +19,7 @@ st.markdown("""
    - Nama lembar atau sheet diganti menjadi **"Lembar1"**.
    - Kolom **CENTER** dan **KEL** (gunakan **text-to-column**) -delimited → tab → general. Yang tadinya **Center 001 Kelompok 01** menjadi **Center 1 Kelompok 1**.
    - Nama sheet pada **DbSimpanan.xlsx** tetap **"IA_SimpananDB"**, jangan diubah lagi.
+   - Penarikan data Db Simpanan s.d. h-1 periode audit
    - File ini digunakan untuk melihat total saldo simpanan anggota.
 
 3. **TAK.xlsx**
