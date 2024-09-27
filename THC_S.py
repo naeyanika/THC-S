@@ -11,12 +11,12 @@ st.markdown("""
 1. **THC.xlsx**
    - Buat file baru dengan nama **THC.xlsx** lalu isi dengan data yang ada di "Format Data THC Gabungan Pivot.xlsb" di sheet atau lembar "Pivot".
    - Data yang diambil hanya dari **ID s.d Cr Total**.
+   - Nama lembar atau sheet diganti menjadi **"Lembar1"**.
    - Untuk menyamakan header Excel, gunakan format di bawah ini (tanda koma tidak perlu diikuti):
    [ ID | Dummy | NAMA | CENTER | KEL | HARI | JAM | STAF | TRANS. DATE | Db Qurban | Cr Qurban | Db Khusus | Cr Khusus | Db Sihara | Cr Sihara | Db Pensiun | Cr Pensiun | Db Pokok | Cr Pokok | Db SIPADAN | Cr SIPADAN | Db Sukarela | Cr Sukarela | Db Wajib | Cr Wajib | Db Total | Cr Total ].
    - File ini digunakan untuk melihat total transaksi, total nominal menabung, jumlah rata-rata anggota menabung, dan kebiasaan menabung anggota.
 
 2. **DbSimpanan.xlsx**
-   - Nama lembar atau sheet diganti menjadi **"Lembar1"**.
    - Kolom **CENTER** dan **KEL** (gunakan **text-to-column**) -delimited → tab → general. Yang tadinya **Center 001 Kelompok 01** menjadi **Center 1 Kelompok 1**.
    - Nama sheet pada **DbSimpanan.xlsx** tetap **"IA_SimpananDB"**, jangan diubah lagi.
    - Penarikan data Db Simpanan s.d. h-1 periode audit
