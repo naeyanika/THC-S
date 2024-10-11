@@ -32,7 +32,12 @@ st.markdown("""
    - Hapus bagian header sebelum di upload.
    - Ganti Nama Header **Member's Status** menjadi **Member Status**
 
-    Jadi kita membutuhkan 4 file yaitu : :blue-background[THC.xlsx], :blue-background[DbSimpanan.xlsx], :blue-background[TAK.xlsx], dan :blue-background[SimpananSiharaRpt.xlsx]. Pastikan nama file sudah sesuai dengan instruksi.              
+5. **Anomali ini berdasarkan:**
+    - HARI RAYA : Adanya tidak masuk tabungan atau jumlah tabungan tidak sesuai dengan paket
+    - SUKARELA : Nominal menabung yang tidak sesuai
+    - PENSIUN : Adanya pengambilan tabungan lebih dari 1% pencairan
+
+Jadi kita membutuhkan 4 file yaitu : :blue-background[THC.xlsx], :blue-background[DbSimpanan.xlsx], :blue-background[TAK.xlsx], dan :blue-background[SimpananSiharaRpt.xlsx]. Pastikan nama file sudah sesuai dengan instruksi.    
 """)
 
 uploaded_files = st.file_uploader("Unggah file Excel", accept_multiple_files=True, type=["xlsx"])
