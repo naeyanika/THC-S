@@ -19,9 +19,9 @@ st.markdown("""
 2. **DbSimpanan.xlsx**
    - Kolom **CENTER** dan **KEL** (gunakan **text-to-column**) -delimited → tab → general. Yang tadinya **Center 001 Kelompok 01** menjadi **Center 1 Kelompok 1**.
    - Nama sheet pada **DbSimpanan.xlsx** tetap **"IA_SimpananDB"**, jangan diubah lagi.
-   - Penarikan data Db Simpanan Awal pembukaan cabang s.d. h-1 awal periode audit
+   - Penarikan data Db Simpanan dari **awal pembukaan cabang s.d. h-1 awal periode audit**
    - File ini digunakan untuk melihat total saldo simpanan anggota.
-   - HARAP TIDAK MENGHAPUS HEADER!
+   - **HARAP TIDAK MENGHAPUS HEADER!**
 
 3. **TAK.xlsx**
    - Data yang diambil dari **TAK.xlsx** yang sudah diolah di poin **"2.TAK"**.
