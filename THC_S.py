@@ -63,9 +63,7 @@ if uploaded_files:
 
 #-----------------------------Sesi Filter
     #Filter Db Simpanan
-         df_simpanan = df_db[
-         (df_db['Sts. Anggota'].str.strip() == 'AKTIF') &
-         (df_db['Sts. Simpanan'].str.strip() == 'AKTIF')
+        df_simpanan = df_db[ (df_db['Sts. Anggota'].str.strip() == 'AKTIF') & (df_db['Sts. Simpanan'].str.strip() == 'AKTIF')
     # Filter sihara
         df_sihara = df_simpanan[(df_simpanan['Product Name'] == 'Simpanan Hari Raya')]
 
