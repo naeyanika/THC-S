@@ -354,9 +354,15 @@ if uploaded_files:
         df1_sukarela = df_sukarela[selected_columns]
     
         df['Modus Sukarela'] = df.groupby(['ID', 'NAMA'])['Db Sukarela'].transform(lambda x: x.mode()[0])
+
         df_selected = df.loc[:, ['ID', 'NAMA', 'Modus Sukarela']]
         df_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
-        df1_sukarela['Nilai Modus'] = df1_sukarela['ID'].map(df_selected.set_index('ID')['Modus Sukarela'])
+        df1_sukarela = df1_sukarela.merge(
+        df_selected[['ID', 'Modus Sukarela']].drop_duplicates(subset='ID', keep='first'),
+        on='ID',
+        how='left'
+        )
+        df1_sukarela.rename(columns={'Modus Sukarela': 'Nilai Modus'}, inplace=True)
     
         df_baru_2.rename(columns=lambda x: x.strip(), inplace=True)
         df_baru_2.rename(columns={'TRANS. DATE': 'TRANS_DATE'}, inplace=True)
