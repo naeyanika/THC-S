@@ -103,6 +103,11 @@ if uploaded_files:
     
         df1_selected = df.loc[:, ['ID', 'NAMA', 'Modus_Sihara']]
         df1_selected.drop_duplicates(subset=['ID', 'NAMA'], keep='first', inplace=True)
+
+        print('ID' in df1_selected.columns)
+        print(df1_selected['ID'].isnull().any())
+
+
         df1_selected['Nilai_Modus'] = df1_selected['ID'].map(df1_selected.set_index('ID')['Modus_Sihara'])
         df1_selected_1['Sisa'] = df1_selected_1['Db Sihara'] - df1_selected_1['Cr Sihara']
 
