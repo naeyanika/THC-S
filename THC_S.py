@@ -329,7 +329,7 @@ if uploaded_files:
         merged_df5['Sisa'] = merged_df5['Saldo Sebelumnya'] + merged_df5['Db Pensiun'] - merged_df5['Cr Pensiun']
     
     # Cek data tersebut masih aktif atau sudah keluar
-        merged_df5['Status'] = merged_df5['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID'].values else 'AKTIF')
+        merged_df5['Status'] = merged_df5['ID'].apply(lambda x: 'KELUAR' if x in df_tak['ID ANGGOTA'].values else 'AKTIF')
 
     # Anomali
         merged_df5['Anomali'] = merged_df5.apply(
